@@ -15,14 +15,16 @@ class ImageCompare:
         w, h = img.size
         pw, ph = part_size
         assert w % pw == h % ph == 0
-        return [img.crop((i, j, i + pw, j + ph)).copy() for i in range(0, w, pw) for j in range(0, h, ph)]
+        return [img.crop((i, j, i + pw, j + ph)).copy()
+                for i in range(0, w, pw) for j in range(0, h, ph)]
 
     def hist_similar(self, lh, rh):
         assert len(lh) == len(rh)
-        return sum(1 - (0 if 1 == r else float(abs(1 - r)) / max(1, r)) for l, r in zip(lh, rh)) / len(lh)
+        return sum(1 - (0 if 1 == r else float(abs(1 - r)) / max(1, r))
+                   for l, r in zip(lh, rh)) / len(lh)
 
     def calc_similar(self, li, ri):
-        similar = sum(self.hist_similar(l.histogram(), r.histogarm())
+        similar = sum(self.hist_similar(l.histogram(), r.histogram())
                       for l, r in zip(self.split_image(li), self.split_image(ri))) / 16.0
         return similar
 
@@ -33,4 +35,10 @@ class ImageCompare:
 
 
 if __name__ == '__main__':
-    pass
+    import os
+    from config.conf import root_dir
+    img = ImageCompare()
+    path1 = os.path.join(root_dir, 'screenshot', '123.png')
+    path2 = os.path.join(root_dir, 'screenshot', '一下.png')
+    imgs = img.calc_similar_by_path(path1, path2)
+    print(imgs)
