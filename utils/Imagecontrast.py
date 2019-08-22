@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # coding=utf-8
+from fuzzywuzzy import fuzz
 from PIL import Image
+import base64
 
 
 class ImageCompare:
@@ -34,11 +36,28 @@ class ImageCompare:
         return self.calc_similar(li, ri)
 
 
+class BaseComparison:
+
+    def comparison(self, path):
+        with open(path, 'rb') as f:
+            basedata = base64.b64encode(f.read())
+        return basedata
+
+    def calc_similar(self, path1, path2):
+        li, ri = self.comparison(path1), \
+                 self.comparison(path2)
+        if fuzz.ratio(li, ri) > 90:
+            return True
+        else:
+            return False
+
+
 if __name__ == '__main__':
     import os
     from config.conf import root_dir
-    img = ImageCompare()
+
+    img = BaseComparison()
     path1 = os.path.join(root_dir, 'screenshot', '123.png')
     path2 = os.path.join(root_dir, 'screenshot', '一下.png')
-    imgs = img.calc_similar_by_path(path1, path2)
+    imgs = img.calc_similar(path1, path2)
     print(imgs)
