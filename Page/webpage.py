@@ -19,6 +19,17 @@ def sleep(seconds=1):
     time.sleep(seconds)
 
 
+def get_url(url, driver):
+    '''打开网址并验证'''
+    driver.set_page_load_timeout(60)
+    try:
+        driver.maximize_window()
+        driver.get(url)
+    except TimeoutException:
+        raise ("打开%s超时请检查网络或网址服务器" % url)
+    assert EC.url_to_be(url)(driver), "地址不正确，应为%s，实为%s" % (url, driver.current_url)
+
+
 class WebPage:
     """selenium基类"""
 
@@ -36,16 +47,6 @@ class WebPage:
         self.wait = WebDriverWait(self.driver, self.timeout)
         self.action = ActionChains(self.driver)
         self.touch = TouchActions(self.driver)
-
-    def get_url(self, url):
-        '''打开网址并验证'''
-        self.driver.set_page_load_timeout(60)
-        try:
-            self.driver.maximize_window()
-            self.driver.get(url)
-        except TimeoutException:
-            raise ("打开%s超时请检查网络或网址服务器" % url)
-        assert EC.url_to_be(url)(self.driver), "地址不正确，应为%s，实为%s" % (url, self.driver.current_url)
 
     def Assert_title(self, text):
         title = EC.title_is(text)

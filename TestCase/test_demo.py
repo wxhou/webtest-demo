@@ -2,10 +2,10 @@
 # coding=utf-8
 import unittest
 from selenium import webdriver
-from utils.readconfig import ReadConfig
 from config.conf import driver_path
-from Page.webpage import sleep
+from Page.webpage import get_url, sleep
 from PageObject.loginpage import Login
+from utils.readconfig import ReadConfig
 from utils.Imagecontrast import ImageCompare
 
 conf = ReadConfig()
@@ -31,16 +31,16 @@ class TestLogin(unittest.TestCase):
 
     def setUp(self) -> None:
         self.imgs = []
-        self.login = Login(self.driver)
-        self.login.get_url(conf.url)
+        get_url(conf.url, self.driver)
 
     def tearDown(self) -> None:
         pass
 
     def test_001(self):
-        self.login.login('admin', '123456')
+        login = Login(self.driver)
+        login.login('admin', '123456')
         sleep(3)
-        self.login.quit_login()
+        login.quit_login()
 
 
 if __name__ == '__main__':
