@@ -27,5 +27,5 @@ class Dirty:
 
 
 if __name__ == '__main__':
-    a = dirty()
+    a = Dirty()
     print(a.delete_png())

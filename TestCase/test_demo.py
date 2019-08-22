@@ -6,10 +6,12 @@ from config.conf import driver_path
 from Page.webpage import get_url, sleep
 from PageObject.loginpage import Login
 from utils.readconfig import ReadConfig
-from utils.Imagecontrast import ImageCompare
+from utils.Imagecontrast import ImageContrast
+from utils.data_generator import Generator
 
 conf = ReadConfig()
-image = ImageCompare()
+gen = Generator()
+ic = ImageContrast()
 
 
 class TestLogin(unittest.TestCase):
@@ -40,6 +42,8 @@ class TestLogin(unittest.TestCase):
         login = Login(self.driver)
         login.login('admin', '123456')
         sleep(3)
+        head = login.login_shot()
+        assert ic(head, gen.screen_name) == 0.0
         login.quit_login()
 
 

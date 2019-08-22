@@ -1,42 +1,15 @@
 #!/usr/bin/env python3
 # coding=utf-8
-from fuzzywuzzy import fuzz
-from PIL import Image
+import math
 import base64
-
-
-class ImageCompare:
-    """
-    本类实现了两个图片的相似度百分比
-    """
-
-    def make_regalur_image(self, img, size=(256, 256)):
-        return img.resize(size).convert('RGB')
-
-    def split_image(self, img, part_size=(64, 64)):
-        w, h = img.size
-        pw, ph = part_size
-        assert w % pw == h % ph == 0
-        return [img.crop((i, j, i + pw, j + ph)).copy()
-                for i in range(0, w, pw) for j in range(0, h, ph)]
-
-    def hist_similar(self, lh, rh):
-        assert len(lh) == len(rh)
-        return sum(1 - (0 if 1 == r else float(abs(1 - r)) / max(1, r))
-                   for l, r in zip(lh, rh)) / len(lh)
-
-    def calc_similar(self, li, ri):
-        similar = sum(self.hist_similar(l.histogram(), r.histogram())
-                      for l, r in zip(self.split_image(li), self.split_image(ri))) / 16.0
-        return similar
-
-    def calc_similar_by_path(self, lf, rf):
-        li, ri = self.make_regalur_image(Image.open(lf)), \
-                 self.make_regalur_image(Image.open(rf))
-        return self.calc_similar(li, ri)
+import operator
+from PIL import Image
+from fuzzywuzzy import fuzz
+from functools import reduce
 
 
 class BaseComparison:
+    """通过base64字符串对比图像"""
 
     def comparison(self, path):
         with open(path, 'rb') as f:
@@ -52,12 +25,25 @@ class BaseComparison:
             return False
 
 
+class ImageContrast:
+    """图像对比算法"""
+
+    def __call__(self, img1, img2):
+        image1 = Image.open(img1)
+        image2 = Image.open(img2)
+
+        h1 = image1.histogram()
+        h2 = image2.histogram()
+
+        result = math.sqrt(reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
+        return result
+
+
 if __name__ == '__main__':
     import os
     from config.conf import root_dir
 
-    img = BaseComparison()
     path1 = os.path.join(root_dir, 'screenshot', '123.png')
-    path2 = os.path.join(root_dir, 'screenshot', '一下.png')
-    imgs = img.calc_similar(path1, path2)
-    print(imgs)
+    path2 = os.path.join(root_dir, 'screenshot', '456.png')
+    img = ImageContrast()
+    print(img(path1, path2))

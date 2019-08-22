@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 # coding=utf-8
+import os
 from faker import Factory
 
 faker = Factory().create('zh_CN')
+root_dir = os.path.abspath(os.path.dirname(os.getcwd()))
 
 
 class Generator:
@@ -42,3 +44,8 @@ class Generator:
     @property
     def name(self):
         return faker.name()  # 生成名字
+
+    @property
+    def screen_name(self):
+        screen_name = os.path.join(root_dir, 'screenshot', '666.png')
+        return screen_name

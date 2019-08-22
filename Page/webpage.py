@@ -41,8 +41,8 @@ class WebPage:
             'id': By.ID
         }  # 元素定位的类型
 
-        # self.driver = webdriver.Chrome()
-        self.driver = driver
+        self.driver = webdriver.Chrome()
+        # self.driver = driver
         self.timeout = 10
         self.wait = WebDriverWait(self.driver, self.timeout)
         self.action = ActionChains(self.driver)
@@ -314,6 +314,20 @@ class WebPage:
             self.driver.switch_to.default_content()
         except Exception as e:
             print(format(e))
+
+    def switchWindowshandle(self):
+        '''切换最新的标签'''
+        now_handle1 = self.driver.current_window_handle
+        all_handle = self.driver.window_handles
+        self.driver.switch_to.window(all_handle[-1])
+        now_handle2 = self.driver.current_window_handle
+        for i in range(3, 0, -1):
+            try:
+                assert now_handle1 != now_handle2
+                break
+            except AssertionError:
+                print("切换标签失败！正在重试，还有%d机会！" % i)
+        print('切换新标签成功！%s' % self.driver.title)
 
     def screenshots_of_element(self, element, number=None, screenshot_path=None):
         '''对某个元素进行截图,并返回截图路径'''

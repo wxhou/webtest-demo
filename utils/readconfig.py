@@ -38,7 +38,7 @@ class Element:
 
     def __init__(self):
         self.element = configparser.ConfigParser()
-        self.element.read(element_path)
+        self.element.read(element_path, encoding='utf-8')
 
     def __call__(self, *args):
         return self.element.get(*args)
@@ -56,4 +56,4 @@ class Element:
 if __name__ == '__main__':
     print(root_dir)
     element = Element()
-    print(element.Login)
+    print(element('login', '账号'))
