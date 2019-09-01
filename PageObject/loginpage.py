@@ -9,8 +9,8 @@ element = Element()
 
 class Login(WebPage):
     def login(self, user, pwd):
-        self.input_text(element('login', '账号'), user)
-        self.input_text(element('login', '密码'), pwd)
+        self.input_text(element('login', '账号'), text=user)
+        self.input_text(element('login', '密码'), text=pwd)
         self.is_click(element('login', '登录'))
         sleep()
 

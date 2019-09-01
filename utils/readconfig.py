@@ -3,7 +3,7 @@
 import configparser
 import os
 
-root_dir = os.path.abspath(os.path.dirname(os.getcwd()))
+root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 ini_path = os.path.join(root_dir, 'config', 'config.ini')
 element_path = os.path.join(root_dir, 'config', 'element.ini')
 

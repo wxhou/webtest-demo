@@ -41,244 +41,138 @@ class WebPage:
             'id': By.ID
         }  # 元素定位的类型
 
-        self.driver = webdriver.Chrome()
-        # self.driver = driver
+        # self.driver = webdriver.Chrome()
+        self.driver = driver
         self.timeout = 10
         self.wait = WebDriverWait(self.driver, self.timeout)
         self.action = ActionChains(self.driver)
         self.touch = TouchActions(self.driver)
 
-    def Assert_title(self, text):
-        title = EC.title_is(text)
-        _title1 = self.driver.title
-        assert title(self.driver), "title不正确，应为%s，实为%s" % (text, _title1)
+        # self.driver = webdriver.Chrome()
+        self.driver = driver
+        self.timeout = 10
+        self.wait = WebDriverWait(self.driver, self.timeout)
+        self.action = ActionChains(self.driver)
 
-    def findElement(self, element, number=None):
-        '''寻找单个元素'''
-        pattern, value = element.split('>')
+    def function(self, func, locator, number=None):
+        """共用方法"""
+        pattern, value = locator.split('==')
         if pattern in self.locate_mode:
             try:
                 if number:
-                    ele = self.wait.until(
-                        EC.presence_of_element_located((self.locate_mode[pattern], value % number)))
+                    element = func(self.locate_mode[pattern], value % number)
                 else:
-                    ele = self.wait.until(
-                        EC.presence_of_element_located((self.locate_mode[pattern], value)))
-
+                    element = func(self.locate_mode[pattern], value)
+            except InvalidElementStateException:
+                print("元素%s，清除输入框内容失败，用户不可编辑" % locator)
+                return
             except NoSuchElementException:
-                raise ('当前页面没有找到元素%s' % value)
+                print('当前页面没有找到元素%s' % locator)
+                return
             except TimeoutException:
-                raise ('查找元素%s超时' % value)
+                print('查找元素%s超时' % locator)
+                return
             except Exception as e:
                 raise e
             else:
-                return ele
+                return element
         else:
             raise ('element type is not "CSS"')
 
-    def findElements(self, element, number=None):
-        '''查找多个相同的元素'''
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-
-                if number:
-                    eles = self.wait.until(
-                        EC.presence_of_all_elements_located((self.locate_mode[pattern], value % number)))
-                else:
-                    eles = self.wait.until(
-                        EC.presence_of_all_elements_located((self.locate_mode[pattern], value)))
-
-            except NoSuchElementException:
-                raise ('当前页面没有找到元素%s' % value)
-            except TimeoutException:
-                raise ('查找元素%s超时' % value)
-            except Exception as e:
-                raise e
-            else:
-                return eles
-        else:
-            raise ('element type is not "CSS"')
-
-    def input_text(self, locator, text):
-        '''输入(输入前先清空)'''
-        self.is_clear(locator)
-        self.driver.implicitly_wait(0.5)
-        if isinstance(locator, tuple):
-            self.findElement(*locator).send_keys(text)
-        else:
-            self.findElement(locator).send_keys(text)
-
-    def focus(self, locator, number=None):
-        # 该函数的编写来源于robot-framework-selenium
-        """聚焦元素"""
-        sleep()
-        pattern, value = locator.split('>')
-        if pattern in self.locate_mode:
-            if number:
-                element = self.driver.find_element(self.locate_mode[pattern], value % number)
-            else:
-                element = self.driver.find_element(self.locate_mode[pattern], value)
-            self.driver.execute_script("arguments[0].focus();", element)
-
-    def is_clear(self, locator):
-        '''清空输入框'''
+    def get_url(self, url):
+        '''打开网址并验证'''
+        self.driver.set_page_load_timeout(60)
         try:
-            if isinstance(locator, tuple):
-                self.findElement(*locator).clear()
-            else:
-                self.findElement(locator).clear()
-        except InvalidElementStateException:
-            print("元素%s，清除输入框内容失败，用户不可编辑" % locator)
+            self.driver.get(url)
+        except TimeoutException:
+            raise ("打开%s超时请检查网络或网址服务器" % url)
+        assert EC.url_contains(url)(self.driver), "地址包含关系不正确，应为%s，实为%s" % (url, self.driver.current_url)
 
-    def is_click(self, element, number=None):
+    def Assert_title(self, text):
+        title1 = EC.title_is(text)
+        title2 = self.driver.title
+        assert title1(self.driver), "title不正确，应为%s，实为%s" % (text, title2)
+
+    def findelement(self, locator, number=None):
+        """寻找单个元素"""
+        function = lambda *args: self.wait.until(lambda x: x.find_element(*args))
+        return self.function(function, locator, number)
+
+    def findelements(self, locator, number=None):
+        '''查找多个相同的元素'''
+        function = lambda *args: self.wait.until(lambda x: x.find_elements(*args))
+        return self.function(function, locator, number)
+
+    def is_clear(self, locator, number=None):
+        '''清空输入框'''
+        self.findelement(locator, number).clear()
+        self.driver.implicitly_wait(0.5)
+
+    def input_text(self, locator, number=None, text=None):
+        '''输入(输入前先清空)'''
+        self.is_clear(locator, number)
+        self.findelement(locator, number).send_keys(text)
+
+    def is_click(self, locator, number=None):
         '''点击'''
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    ele = self.wait.until(
-                        EC.element_to_be_clickable((self.locate_mode[pattern], value % number)))
-                else:
-                    ele = self.wait.until(
-                        EC.element_to_be_clickable((self.locate_mode[pattern], value)))
-            except NoSuchElementException:
-                raise ('当前页面没有找到元素%s' % value)
-            except TimeoutException:
-                raise ('查找元素%s超时' % value)
-            except Exception as e:
-                raise e
-            else:
-                ele.click()
-                sleep()
-        else:
-            raise ('element type is not "CSS"')
+        function = lambda *args: self.wait.until(
+            EC.element_to_be_clickable(args))
+        ele = self.function(function, locator, number)
+        ele.click()
+        sleep()
 
-    def isElementText(self, locator):
+    def isElementText(self, locator, number=None):
         '''获取当前的text'''
-        if isinstance(locator, tuple):
-            _text = self.findElement(*locator).text
-        else:
-            _text = self.findElement(locator).text
-        return _text
+        return self.findelement(locator, number).text
 
-    def textInElement(self, element, number=None, text=None):
+    def textInElement(self, locator, number=None, text=None):
         '''检查某段文本在输入框中'''
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    eletxt = EC.text_to_be_present_in_element((self.locate_mode[pattern], value % number), text)(
-                        self.driver)
-                else:
-                    eletxt = EC.text_to_be_present_in_element((self.locate_mode[pattern], value), text)(self.driver)
-            except Exception as e:
-                raise e
-            else:
-                return eletxt
-        else:
-            raise ('Element type is not "CSS"')
+        function = lambda *args: EC.text_to_be_present_in_element(args, text)(self.driver)
+        return self.function(function, locator, number)
 
     def isElementNum(self, locator):
         '''获取相同元素的个数'''
-        if isinstance(locator, tuple):
-            _num = self.findElements(*locator)
-        else:
-            _num = self.findElements(locator)
-        return len(_num)
+        return len(self.findelements(locator))
 
-    def isElementExists(self, element, number=None):
-        '''元素是否可见,等待3S'''
-        wait = WebDriverWait(self.driver, 3)
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    wait.until(
-                        EC.visibility_of_element_located((self.locate_mode[pattern], value % number)))
-                else:
-                    wait.until(
-                        EC.visibility_of_element_located((self.locate_mode[pattern], value)))
-            except (NoSuchElementException, TimeoutException):
-                return False
-            except StaleElementReferenceException:
-                print("当前元素不在当前的页面中，当前页面%s，元素%s" % (self.driver.current_url, value))
-                return False
-            except Exception as e:
-                raise e
-            else:
-                return True
+    def isElementExists(self, locator, number=None):
+        '''元素是否可见'''
+        function = lambda *args: self.wait.until(EC.visibility_of_element_located(args))
+        if self.function(function, locator, number):
+            return True
         else:
-            raise ('element type is not "css"')
+            return False
 
-    def isSelected(self, element, number=None):
+    def isSelected(self, locator, number=None):
         '''判断是否选中'''
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    Exists = EC.element_located_selection_state_to_be((self.locate_mode[pattern], value % number),
-                                                                      True)(
-                        self.driver)
-                else:
-                    Exists = EC.element_located_selection_state_to_be((self.locate_mode[pattern], value), True)(
-                        self.driver)
-            except Exception as e:
-                raise e
-            else:
-                return Exists
-        else:
-            raise ('element type is not "css"')
+        function = lambda *args: EC.element_located_selection_state_to_be(args,
+                                                                          True)(self.driver)
+        return self.function(function, locator, number)
 
-    def action_click(self, locator):
+    def action_click(self, locator, number=None):
         '''使用鼠标点击'''
         sleep()
-        if isinstance(locator, tuple):
-            _element = self.findElement(*locator)
-        else:
-            _element = self.findElement(locator)
+        element = self.findelement(locator, number)
         self.driver.implicitly_wait(1)
-        self.action.click(_element).perform()
+        self.action.click(element).perform()
         sleep()
 
-    def action_sendkeys(self, locator, text):
+    def action_sendkeys(self, locator, number=None, text=None):
         '''action的输入方法'''
         sleep()
-        if isinstance(locator, tuple):
-            _element = self.findElement(*locator)
-            self.is_click(*locator)
-        else:
-            _element = self.findElement(locator)
-            self.is_click(locator)
-        self.driver.implicitly_wait(1)
-        self.action.click(_element).send_keys(text).perform()
+        element = self.findelement(locator, number)
+        sleep()
+        self.is_click(locator, number)
+        self.action.click(element).send_keys(text)
+        self.action.perform()
+        self.action._actions.pop()  # 防止重复输入
 
-    def upload_File(self, element, number=None, filepath=None):
+    def upload_File(self, locator, number=None, filepath=None):
         '''上传文件'''
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    ele = self.driver.find_element(self.locate_mode[pattern], value % number)
-                else:
-                    ele = self.driver.find_element(self.locate_mode[pattern], value)
-            except NoSuchElementException:
-                raise ('当前页面没有找到元素%s' % value)
-            except TimeoutException:
-                raise ('查找元素%s超时' % value)
-            except Exception as e:
-                raise e
-            else:
-                if not filepath:
-                    raise ("upload_File方法没有指定上传的文件")
-                sleep()
-                ele.send_keys(filepath)
-                sleep()
-        else:
-            raise ('element type is not "CSS"')
+        self.findelement(locator, number).send_keys(filepath)
+        sleep(5)
 
     def alertTextExists(self):
-        "判断弹框是否出现"
+        "判断弹框是否出现，并返回弹框的文字"
         try:
             alert = EC.alert_is_present()(self.driver)
             text = alert.text
@@ -288,25 +182,11 @@ class WebPage:
             alert.accept()
             return text
 
-    def switchToFrame(self, element, number=None):
+    def switchToFrame(self, locator, number=None):
         """切换iframe"""
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    frame = self.wait.until(
-                        EC.frame_to_be_available_and_switch_to_it((self.locate_mode[pattern], value % number)))
-                else:
-                    frame = self.wait.until(
-                        EC.frame_to_be_available_and_switch_to_it((self.locate_mode[pattern], value % number)))
-            except NoSuchElementException:
-                raise ('当前页面没有找到元素%s' % value)
-            except TimeoutException:
-                raise ('查找元素%s超时' % value)
-            except Exception as e:
-                raise e
-            else:
-                return frame
+        function = lambda *args: self.wait.until(
+            EC.frame_to_be_available_and_switch_to_it(args))
+        return self.function(function, locator, number)
 
     def switchToDefaultFrame(self):
         """返回默认"""
@@ -324,54 +204,64 @@ class WebPage:
         for i in range(3, 0, -1):
             try:
                 assert now_handle1 != now_handle2
+                print('切换新标签成功！%s' % self.driver.title)
                 break
             except AssertionError:
                 print("切换标签失败！正在重试，还有%d机会！" % i)
-        print('切换新标签成功！%s' % self.driver.title)
-
-    def screenshots_of_element(self, element, number=None, screenshot_path=None):
-        '''对某个元素进行截图,并返回截图路径'''
-        pattern, value = element.split('>')
-        if pattern in self.locate_mode:
-            try:
-                if number:
-                    ele = self.wait.until(
-                        EC.visibility_of_element_located((self.locate_mode[pattern], value % number)))
-                else:
-                    ele = self.wait.until(
-                        EC.visibility_of_element_located((self.locate_mode[pattern], value)))
-            except (NoSuchElementException, TimeoutException):
-                raise ("当前元素找不到，或查找超时！", format(value))
-            except StaleElementReferenceException:
-                raise ("当前元素不在当前的页面中，当前页面%s，元素%s" % (self.driver.current_url, value))
-            except Exception as e:
-                raise e
-            else:
-                self.shot(screenshot_path)
-                print("需要截图的元素坐标%s" % ele.location)
-                print("需要截图的元素大小%s" % ele.size)
-                shot = (ele.location['x'],
-                        ele.location['y'],
-                        ele.location['x'] + ele.size['width'],
-                        ele.location['y'] + ele.size['height'])
-                im = Image.open(screenshot_path)
-                im = im.crop(shot)
-                im.save(screenshot_path)
-                sleep()
         else:
-            raise ('element type is not "css"')
+            print("切换标签失败!请检查！")
+
+    def screenshots_of_element(self, locator, number=None, screenshot_path=None):
+        '''对某个元素进行截图,并返回截图路径'''
+        ele = self.findelement(locator, number)
+        self.driver.save_screenshot(screenshot_path)
+        self.shot_file(screenshot_path)
+        print("需要截图的元素坐标%s" % ele.location)
+        print("需要截图的元素大小%s" % ele.size)
+        shot = (ele.location['x'],
+                ele.location['y'],
+                ele.location['x'] + ele.size['width'],
+                ele.location['y'] + ele.size['height'])
+        im = Image.open(screenshot_path)
+        im = im.crop(shot)
+        im.save(screenshot_path)
+        sleep()
+        return screenshot_path
+
+    def focus(self, locator, number=None):
+        # 该函数的编写来源于robot-framework-selenium
+        """聚焦元素"""
+        sleep()
+        ele = self.findelement(locator, number)
+        self.driver.execute_script("arguments[0].focus();", ele)
+
+    def click_drop_down(self, selectlocator, selectnumber=None,
+                        optionlocator=None, optionnumber=None, ):
+        """封装两次点击"""
+        self.is_click(selectlocator, selectnumber)
+        self.is_click(optionlocator, optionnumber)
+
+    def select_drop_down(self, locator, number=None,
+                         index=None, value=None, text=None):
+        """选择下拉框"""
+        ele = self.findelement(locator, number)
+        sleep(2)
+        # 这里一定要加等待时间，否则会引起如下报错
+        # Element is not currently visible and may not be manipulated
+        if value:
+            Select(ele).select_by_index(index)
+        elif index:
+            Select(ele).select_by_value(value)
+        elif text:
+            Select(ele).select_by_visible_text(text)
 
     def getSource(self):
         """获取页面源代码"""
         return self.driver.page_source
 
-    def shot(self, path):
-        '''base64截图'''
+    def shot_file(self, path):
+        '''文件截图截图'''
         return self.driver.save_screenshot(path)
-
-    def roll(self, locator):
-        '''执行Windows脚本'''
-        self.driver.execute_script(locator)
 
     def close(self):
         '''关闭当前标签'''

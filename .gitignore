@@ -1,3 +1,5 @@
-/venv/
-/.idea/
+venv/
+.idea/
 demo.py
+*.pyc
+__pycache__/

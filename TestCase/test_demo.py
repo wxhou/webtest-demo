@@ -35,9 +35,6 @@ class TestLogin(unittest.TestCase):
         self.imgs = []
         get_url(conf.url, self.driver)
 
-    def tearDown(self) -> None:
-        pass
-
     def test_001(self):
         login = Login(self.driver)
         login.login('admin', '123456')
