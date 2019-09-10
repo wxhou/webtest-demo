@@ -4,7 +4,7 @@ import os
 from faker import Factory
 
 faker = Factory().create('zh_CN')
-root_dir = os.path.abspath(os.path.dirname(os.getcwd()))
+root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 class Generator:

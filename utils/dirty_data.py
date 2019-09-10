@@ -3,7 +3,7 @@
 import os
 import time
 
-root_dir = os.path.abspath(os.path.dirname(os.getcwd()))
+root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 class Dirty:
