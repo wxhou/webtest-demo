@@ -1,31 +1,29 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding=utf-8
+'''
+@File    :   test_demo.py
+@Time    :   2019/09/28 11:12:03
+@Author  :   wxhou
+@Version :   1.0
+@Contact :   wxhou@yunjinginc.com
+'''
+import sys
+sys.path.append('.')
 import unittest
 from selenium import webdriver
 from config.conf import driver_path
 from Page.webpage import get_url, sleep
 from PageObject.loginpage import Login
-from utils.readconfig import ReadConfig
-from utils.Imagecontrast import ImageContrast
-from utils.data_generator import Generator
-
-conf = ReadConfig()
-gen = Generator()
-ic = ImageContrast()
+from utils.readconfig import conf
+from utils.Imagecontrast import ic
+from utils.data_generator import gen
 
 
 class TestLogin(unittest.TestCase):
     """登录功能"""
-
     @classmethod
     def setUpClass(cls) -> None:
-        if conf.remote_state == 'True':
-            cls.driver = webdriver.Remote(
-                command_executor=conf.remote_server,
-                desired_capabilities={'browserName': 'chrome'}
-            )
-        else:
-            cls.driver = webdriver.Chrome(executable_path=driver_path)
+        cls.driver = webdriver.Chrome(executable_path=driver_path)
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -35,13 +33,19 @@ class TestLogin(unittest.TestCase):
         self.imgs = []
         get_url(conf.url, self.driver)
 
+    def tearDown(self):
+        login = Login(self.driver)
+        login.quit_login()
+
     def test_001(self):
         login = Login(self.driver)
         login.login('admin', '123456')
         sleep(3)
         head = login.login_shot()
-        assert ic(head, gen.screen_name) == 0.0
-        login.quit_login()
+        assert ic(
+            head,
+            gen.screen_name) == 0.0, "当前元素截图%s，与预期图片%s不匹配" % (head,
+                                                              gen.screen_name)
 
 
 if __name__ == '__main__':

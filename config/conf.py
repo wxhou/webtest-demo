@@ -1,10 +1,18 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding=utf-8
+'''
+@File    :   conf.py
+@Time    :   2019/09/28 11:15:16
+@Author  :   wxhou
+@Version :   1.0
+@Contact :   wxhou@yunjinginc.com
+'''
+import sys
+sys.path.append('.')
 import os
 import platform
-from utils.data_generator import Generator
+from utils.data_generator import gen
 
-gen = Generator()
 
 root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 

@@ -27,12 +27,12 @@ def get_url(url, driver):
         driver.get(url)
     except TimeoutException:
         raise ("打开%s超时请检查网络或网址服务器" % url)
-    assert EC.url_to_be(url)(driver), "地址不正确，应为%s，实为%s" % (url, driver.current_url)
+    assert EC.url_to_be(url)(driver), "地址不正确，应为%s，实为%s" % (url,
+                                                           driver.current_url)
 
 
 class WebPage:
     """selenium基类"""
-
     def __init__(self, driver):
         self.locate_mode = {
             'css': By.CSS_SELECTOR,
@@ -47,12 +47,6 @@ class WebPage:
         self.wait = WebDriverWait(self.driver, self.timeout)
         self.action = ActionChains(self.driver)
         self.touch = TouchActions(self.driver)
-
-        # self.driver = webdriver.Chrome()
-        self.driver = driver
-        self.timeout = 10
-        self.wait = WebDriverWait(self.driver, self.timeout)
-        self.action = ActionChains(self.driver)
 
     def function(self, func, locator, number=None):
         """共用方法"""
@@ -86,7 +80,9 @@ class WebPage:
             self.driver.get(url)
         except TimeoutException:
             raise ("打开%s超时请检查网络或网址服务器" % url)
-        assert EC.url_contains(url)(self.driver), "地址包含关系不正确，应为%s，实为%s" % (url, self.driver.current_url)
+        assert EC.url_contains(url)(
+            self.driver), "地址包含关系不正确，应为%s，实为%s" % (url,
+                                                   self.driver.current_url)
 
     def Assert_title(self, text):
         title1 = EC.title_is(text)
@@ -95,12 +91,14 @@ class WebPage:
 
     def findelement(self, locator, number=None):
         """寻找单个元素"""
-        function = lambda *args: self.wait.until(lambda x: x.find_element(*args))
+        function = lambda *args: self.wait.until(lambda x: x.find_element(*args
+                                                                          ))
         return self.function(function, locator, number)
 
     def findelements(self, locator, number=None):
         '''查找多个相同的元素'''
-        function = lambda *args: self.wait.until(lambda x: x.find_elements(*args))
+        function = lambda *args: self.wait.until(lambda x: x.find_elements(
+            *args))
         return self.function(function, locator, number)
 
     def is_clear(self, locator, number=None):
@@ -127,7 +125,8 @@ class WebPage:
 
     def textInElement(self, locator, number=None, text=None):
         '''检查某段文本在输入框中'''
-        function = lambda *args: EC.text_to_be_present_in_element(args, text)(self.driver)
+        function = lambda *args: EC.text_to_be_present_in_element(args, text)(
+            self.driver)
         return self.function(function, locator, number)
 
     def isElementNum(self, locator):
@@ -136,7 +135,8 @@ class WebPage:
 
     def isElementExists(self, locator, number=None):
         '''元素是否可见'''
-        function = lambda *args: self.wait.until(EC.visibility_of_element_located(args))
+        function = lambda *args: self.wait.until(
+            EC.visibility_of_element_located(args))
         if self.function(function, locator, number):
             return True
         else:
@@ -144,8 +144,8 @@ class WebPage:
 
     def isSelected(self, locator, number=None):
         '''判断是否选中'''
-        function = lambda *args: EC.element_located_selection_state_to_be(args,
-                                                                          True)(self.driver)
+        function = lambda *args: EC.element_located_selection_state_to_be(
+            args, True)(self.driver)
         return self.function(function, locator, number)
 
     def action_click(self, locator, number=None):
@@ -211,15 +211,17 @@ class WebPage:
         else:
             print("切换标签失败!请检查！")
 
-    def screenshots_of_element(self, locator, number=None, screenshot_path=None):
+    def screenshots_of_element(self,
+                               locator,
+                               number=None,
+                               screenshot_path=None):
         '''对某个元素进行截图,并返回截图路径'''
         ele = self.findelement(locator, number)
         self.driver.save_screenshot(screenshot_path)
         self.shot_file(screenshot_path)
         print("需要截图的元素坐标%s" % ele.location)
         print("需要截图的元素大小%s" % ele.size)
-        shot = (ele.location['x'],
-                ele.location['y'],
+        shot = (ele.location['x'], ele.location['y'],
                 ele.location['x'] + ele.size['width'],
                 ele.location['y'] + ele.size['height'])
         im = Image.open(screenshot_path)
@@ -235,14 +237,23 @@ class WebPage:
         ele = self.findelement(locator, number)
         self.driver.execute_script("arguments[0].focus();", ele)
 
-    def click_drop_down(self, selectlocator, selectnumber=None,
-                        optionlocator=None, optionnumber=None, ):
+    def click_drop_down(
+            self,
+            selectlocator,
+            selectnumber=None,
+            optionlocator=None,
+            optionnumber=None,
+    ):
         """封装两次点击"""
         self.is_click(selectlocator, selectnumber)
         self.is_click(optionlocator, optionnumber)
 
-    def select_drop_down(self, locator, number=None,
-                         index=None, value=None, text=None):
+    def select_drop_down(self,
+                         locator,
+                         number=None,
+                         index=None,
+                         value=None,
+                         text=None):
         """选择下拉框"""
         ele = self.findelement(locator, number)
         sleep(2)

@@ -1,5 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding=utf-8
+'''
+@File    :   readconfig.py
+@Time    :   2019/09/28 11:08:34
+@Author  :   wxhou
+@Version :   1.0
+@Contact :   wxhou@yunjinginc.com
+'''
+import sys
+sys.path.append('.')
 import configparser
 import os
 
@@ -10,32 +19,15 @@ element_path = os.path.join(root_dir, 'config', 'element.ini')
 
 class ReadConfig:
     def __init__(self):
-        self.config = configparser.ConfigParser()
+        self.config = configparser.RawConfigParser()
         self.config.read(ini_path)
 
     @property
     def url(self):
         return self.config.get('server', 'url')
 
-    @property
-    def remote_state(self):
-        state = self.config.get('remote', 'state')
-        return state
-
-    @property
-    def remote_server(self):
-        server = self.config.get('remote', 'server')
-        return server
-
-    @remote_state.setter
-    def remote_state(self, value):
-        self.config.set('remote', 'state', value)
-        with open(ini_path, 'w', encoding='utf-8') as f:
-            self.config.write(f)
-
 
 class Element:
-
     def __init__(self):
         self.element = configparser.ConfigParser()
         self.element.read(element_path, encoding='utf-8')
@@ -50,10 +42,13 @@ class Element:
         :return:
         """
         sections = self.element.items(item)
-        return sections
+        if sections:
+            return sections
 
+
+conf = ReadConfig()
+element = Element()
 
 if __name__ == '__main__':
     print(root_dir)
-    element = Element()
-    print(element('login', '账号'))
+    print(element.se)

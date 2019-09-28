@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # coding=utf-8
 from Page.webpage import WebPage, sleep
-from utils.readconfig import Element
+from utils.readconfig import element
 from config.conf import srceenshot_name
 
-element = Element()
+
 
 
 class Login(WebPage):
@@ -21,3 +21,6 @@ class Login(WebPage):
     def quit_login(self):
         self.is_click(element('login', '用户头像'))
         self.is_click(element('login', '注销'))
+
+if __name__ == "__main__":
+    pass

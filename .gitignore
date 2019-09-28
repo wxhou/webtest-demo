@@ -3,3 +3,5 @@ venv/
 demo.py
 *.pyc
 __pycache__/
+report/
+screenshot/

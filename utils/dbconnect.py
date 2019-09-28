@@ -1,8 +1,18 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding=utf-8
+'''
+@File    :   dbconnect.py
+@Time    :   2019/09/28 11:11:44
+@Author  :   wxhou
+@Version :   1.0
+@Contact :   wxhou@yunjinginc.com
+'''
+import sys
+sys.path.append('.')
 import os
 import sqlite3
-from config.conf import root_dir
+
+root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
 class SQLite:

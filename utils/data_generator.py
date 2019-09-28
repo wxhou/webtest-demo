@@ -1,5 +1,14 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # coding=utf-8
+'''
+@File    :   data_generator.py
+@Time    :   2019/09/28 11:11:50
+@Author  :   wxhou
+@Version :   1.0
+@Contact :   wxhou@yunjinginc.com
+'''
+import sys
+sys.path.append('.')
 import os
 from faker import Factory
 
@@ -49,3 +58,8 @@ class Generator:
     def screen_name(self):
         screen_name = os.path.join(root_dir, 'screenshot', '666.png')
         return screen_name
+
+gen = Generator()
+
+if __name__ == "__main__":
+    print(gen.address)
