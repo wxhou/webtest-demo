@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 '''
 @File    :   runcase.py
@@ -12,7 +12,7 @@ sys.path.append('.')
 import os
 import unittest
 from config.conf import root_dir
-from utils.HTMLTestRunner_cn import HTMLTestRunner
+from common.HTMLTestRunner_cn import HTMLTestRunner
 
 
 def report_path():
@@ -37,4 +37,4 @@ if __name__ == "__main__":
                                     save_last_try=True)
             runner.run(discover)
     except Exception as e:
-        print("用例执行失败", format(e))
+        print("用例执行失败:{}".format(e))

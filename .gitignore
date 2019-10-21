@@ -5,3 +5,5 @@ demo.py
 __pycache__/
 report/
 screenshot/
+demo.py
+.vscode/

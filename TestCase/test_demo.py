@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding=utf-8
 '''
 @File    :   test_demo.py
@@ -14,8 +14,8 @@ from selenium import webdriver
 from config.conf import driver_path
 from Page.webpage import get_url, sleep
 from PageObject.loginpage import Login
-from utils.readconfig import conf
-from utils.Imagecontrast import ic
+from common.readconfig import conf
+from common.Imagecontrast import ic
 from utils.data_generator import gen
 
 
