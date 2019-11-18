@@ -10,11 +10,11 @@
 import sys
 sys.path.append('.')
 import configparser
+import settings
 import os
 
-root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-ini_path = os.path.join(root_dir, 'config', 'config.ini')
-element_path = os.path.join(root_dir, 'config', 'element.ini')
+ini_path = os.path.join(settings.root_dir, 'config', 'config.ini')
+element_path = os.path.join(settings.root_dir, 'config', 'element.ini')
 
 
 class ReadConfig:
@@ -46,9 +46,8 @@ class Element:
             return sections
 
 
-conf = ReadConfig()
+ini = ReadConfig()
 element = Element()
 
 if __name__ == '__main__':
-    print(root_dir)
-    print(element.se)
+    print(ini.url)

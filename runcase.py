@@ -10,25 +10,16 @@
 import sys
 sys.path.append('.')
 import os
+import settings
 import unittest
-from config.conf import root_dir
 from common.HTMLTestRunner_cn import HTMLTestRunner
 
-
-def report_path():
-    """报告目录"""
-    report_path = os.path.join(root_dir, 'report')
-    if not os.path.exists(report_path):
-        os.makedirs(report_path)
-    return os.path.join(report_path, 'report.html')
-
-
-test_suites = os.path.join(root_dir, 'TestCase')
+test_suites = os.path.join(settings.root_dir, 'TestCase')
 discover = unittest.defaultTestLoader.discover(test_suites, pattern="test*.py")
 
 if __name__ == "__main__":
     try:
-        with open(report_path(), 'wb+') as fp:
+        with open('report.html', 'wb+') as fp:
             runner = HTMLTestRunner(stream=fp,
                                     title="测试结果",
                                     description="用例执行情况",

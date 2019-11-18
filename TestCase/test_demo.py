@@ -11,11 +11,11 @@ import sys
 sys.path.append('.')
 import unittest
 from selenium import webdriver
-from config.conf import driver_path
-from Page.webpage import get_url, sleep
+from settings import driver_path
+from Page.webpage import WebPage,sleep
 from PageObject.loginpage import Login
-from common.readconfig import conf
 from common.Imagecontrast import ic
+from common.readconfig import ini
 from utils.data_generator import gen
 
 
@@ -31,7 +31,8 @@ class TestLogin(unittest.TestCase):
 
     def setUp(self) -> None:
         self.imgs = []
-        get_url(conf.url, self.driver)
+        login = Login(self.driver)
+        login.get_url(ini.url)
 
     def tearDown(self):
         login = Login(self.driver)
@@ -41,11 +42,12 @@ class TestLogin(unittest.TestCase):
         login = Login(self.driver)
         login.login('admin', '123456')
         sleep(3)
-        head = login.login_shot()
+        head = login.login_shot(gen.screenshot_name)
+        self.driver.refresh()
         assert ic(
             head,
-            gen.screen_name) == 0.0, "当前元素截图%s，与预期图片%s不匹配" % (head,
-                                                              gen.screen_name)
+            gen.screen_expected) == 0.0, "当前元素截图%s，与预期图片%s不匹配" % (head,
+                                                              gen.screen_expected)
 
 
 if __name__ == '__main__':

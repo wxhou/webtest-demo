@@ -2,9 +2,6 @@
 # coding=utf-8
 from Page.webpage import WebPage, sleep
 from common.readconfig import element
-from config.conf import srceenshot_name
-
-
 
 
 class Login(WebPage):
@@ -14,13 +11,15 @@ class Login(WebPage):
         self.is_click(element('login', '登录'))
         sleep()
 
-    def login_shot(self):
-        self.screenshots_of_element(element('home', '头像'), screenshot_path=srceenshot_name)
+    def login_shot(self, srceenshot_name):
+        self.screenshots_of_element(element('home', '头像'),
+                                    screenshot_path=srceenshot_name)
         return srceenshot_name
 
     def quit_login(self):
         self.is_click(element('login', '用户头像'))
         self.is_click(element('login', '注销'))
+
 
 if __name__ == "__main__":
     pass

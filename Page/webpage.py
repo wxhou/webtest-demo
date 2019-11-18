@@ -4,9 +4,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.touch_actions import TouchActions
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
 from selenium import webdriver
+from utils.log import log
 from PIL import Image
 import time
 
@@ -17,18 +19,6 @@ def sleep(seconds=1):
     :return 有些提示框不强制等待，只用显式等待会导致执行报错
     '''
     time.sleep(seconds)
-
-
-def get_url(url, driver):
-    '''打开网址并验证'''
-    driver.set_page_load_timeout(60)
-    try:
-        driver.maximize_window()
-        driver.get(url)
-    except TimeoutException:
-        raise ("打开%s超时请检查网络或网址服务器" % url)
-    assert EC.url_to_be(url)(driver), "地址不正确，应为%s，实为%s" % (url,
-                                                           driver.current_url)
 
 
 class WebPage:
@@ -78,6 +68,7 @@ class WebPage:
         self.driver.set_page_load_timeout(60)
         try:
             self.driver.get(url)
+            log.info("打开网页：%s" % url)
         except TimeoutException:
             raise ("打开%s超时请检查网络或网址服务器" % url)
         assert EC.url_contains(url)(
@@ -85,6 +76,7 @@ class WebPage:
                                                    self.driver.current_url)
 
     def Assert_title(self, text):
+        """验证网页的title文字"""
         title1 = EC.title_is(text)
         title2 = self.driver.title
         assert title1(self.driver), "title不正确，应为%s，实为%s" % (text, title2)
@@ -104,12 +96,14 @@ class WebPage:
     def is_clear(self, locator, number=None):
         '''清空输入框'''
         self.findelement(locator, number).clear()
+        log.info("清空输入框：%s" % locator)
         self.driver.implicitly_wait(0.5)
 
     def input_text(self, locator, number=None, text=None):
         '''输入(输入前先清空)'''
         self.is_clear(locator, number)
         self.findelement(locator, number).send_keys(text)
+        log.info("输入%s，在元素%s中" % (text, locator))
 
     def is_click(self, locator, number=None):
         '''点击'''
@@ -117,26 +111,33 @@ class WebPage:
             EC.element_to_be_clickable(args))
         ele = self.function(function, locator, number)
         ele.click()
+        log.info("点击元素%s" % locator)
         sleep()
 
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
-        return self.findelement(locator, number).text
+        _text = self.findelement(locator, number).text
+        log.info("获取元素%s文字：%s" % (locator, _text))
+        return _text
 
     def textInElement(self, locator, number=None, text=None):
         '''检查某段文本在输入框中'''
         function = lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver)
+        log.info("检查文本【%s】在输入框%s中" % (text, locator))
         return self.function(function, locator, number)
 
     def isElementNum(self, locator):
         '''获取相同元素的个数'''
-        return len(self.findelements(locator))
+        number = len(self.findelements(locator))
+        log.info("元素%s的个数是：%s" % (locator, number))
+        return number
 
     def isElementExists(self, locator, number=None):
         '''元素是否可见'''
         function = lambda *args: self.wait.until(
             EC.visibility_of_element_located(args))
+        log.info("检查元素%s是否可见" % locator)
         if self.function(function, locator, number):
             return True
         else:
@@ -154,6 +155,7 @@ class WebPage:
         element = self.findelement(locator, number)
         self.driver.implicitly_wait(1)
         self.action.click(element).perform()
+        log.info("使用鼠标点击%s" % locator)
         sleep()
 
     def action_sendkeys(self, locator, number=None, text=None):
@@ -164,11 +166,13 @@ class WebPage:
         self.is_click(locator, number)
         self.action.click(element).send_keys(text)
         self.action.perform()
+        log.info("正在使用鼠标方法输入%s" % text)
         self.action._actions.pop()  # 防止重复输入
 
     def upload_File(self, locator, number=None, filepath=None):
         '''上传文件'''
         self.findelement(locator, number).send_keys(filepath)
+        log.info("正在上传文件：%s" % filepath)
         sleep(5)
 
     def alertTextExists(self):
@@ -176,6 +180,7 @@ class WebPage:
         try:
             alert = EC.alert_is_present()(self.driver)
             text = alert.text
+            log.info("Alert弹窗提示为：%s" % text)
         except Exception as e:
             raise e
         else:
@@ -186,6 +191,7 @@ class WebPage:
         """切换iframe"""
         function = lambda *args: self.wait.until(
             EC.frame_to_be_available_and_switch_to_it(args))
+        log.info("切换最新的iframe")
         return self.function(function, locator, number)
 
     def switchToDefaultFrame(self):
@@ -194,6 +200,8 @@ class WebPage:
             self.driver.switch_to.default_content()
         except Exception as e:
             print(format(e))
+        else:
+            log.info("返回至默认的iframe")
 
     def switchWindowshandle(self):
         '''切换最新的标签'''
@@ -219,8 +227,8 @@ class WebPage:
         ele = self.findelement(locator, number)
         self.driver.save_screenshot(screenshot_path)
         self.shot_file(screenshot_path)
-        print("需要截图的元素坐标%s" % ele.location)
-        print("需要截图的元素大小%s" % ele.size)
+        log.info("需要截图的元素坐标%s" % ele.location)
+        log.info("需要截图的元素大小%s" % ele.size)
         shot = (ele.location['x'], ele.location['y'],
                 ele.location['x'] + ele.size['width'],
                 ele.location['y'] + ele.size['height'])
@@ -228,6 +236,7 @@ class WebPage:
         im = im.crop(shot)
         im.save(screenshot_path)
         sleep()
+        log.info("截图的路径是：%s" % screenshot_path)
         return screenshot_path
 
     def focus(self, locator, number=None):
@@ -236,6 +245,7 @@ class WebPage:
         sleep()
         ele = self.findelement(locator, number)
         self.driver.execute_script("arguments[0].focus();", ele)
+        log.info("元素不可见，正在聚焦元素%s！" % locator)
 
     def click_drop_down(
             self,
@@ -259,28 +269,33 @@ class WebPage:
         sleep(2)
         # 这里一定要加等待时间，否则会引起如下报错
         # Element is not currently visible and may not be manipulated
-        if value:
+        if index:
             Select(ele).select_by_index(index)
-        elif index:
+        elif value:
             Select(ele).select_by_value(value)
         elif text:
             Select(ele).select_by_visible_text(text)
 
+    @property
     def getSource(self):
         """获取页面源代码"""
+        log.info("正在获取页面的源码！")
         return self.driver.page_source
 
     def shot_file(self, path):
         '''文件截图截图'''
+        log.info("正在进行文件截图！生成文件为：%s" % path)
         return self.driver.save_screenshot(path)
 
     def close(self):
         '''关闭当前标签'''
+        log.info("关闭浏览器标签")
         self.driver.close()
 
     def refresh(self):
         '''刷新页面F5'''
         self.driver.refresh()
+        log.info("刷新网页：%s" % self.driver.current_url())
         self.driver.implicitly_wait(30)
 
 

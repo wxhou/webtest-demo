@@ -34,7 +34,7 @@ class BaseComparison:
 
 
 class ImageContrast:
-    """图像对比算法"""
+    """图像对比算法，当result为0.0时结果正确"""
     def __call__(self, img1, img2):
         image1 = Image.open(img1)
         image2 = Image.open(img2)
@@ -51,9 +51,8 @@ class ImageContrast:
 ic = ImageContrast()
 if __name__ == '__main__':
     import os
-    from config.conf import root_dir
-
-    path1 = os.path.join(root_dir, 'screenshot', '123.png')
-    path2 = os.path.join(root_dir, 'screenshot', '456.png')
-    img = ImageContrast()
-    print(img(path1, path2))
+    from settings import root_dir
+    path1 = os.path.join(root_dir, 'screenshot', 'Expected.png')
+    path2 = os.path.join(root_dir, 'screenshot', '有些.png')
+    img = BaseComparison()
+    print(img.calc_similar(path1, path2))
