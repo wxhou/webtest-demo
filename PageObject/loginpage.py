@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 from Page.webpage import WebPage, sleep
-from common.readconfig import element
+from common.readelements import element
 
 
 class Login(WebPage):

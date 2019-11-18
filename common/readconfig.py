@@ -13,8 +13,7 @@ import configparser
 import settings
 import os
 
-ini_path = os.path.join(settings.root_dir, 'config', 'config.ini')
-element_path = os.path.join(settings.root_dir, 'config', 'element.ini')
+ini_path = os.path.join(settings.root_dir, 'config.ini')
 
 
 class ReadConfig:
@@ -27,27 +26,7 @@ class ReadConfig:
         return self.config.get('server', 'url')
 
 
-class Element:
-    def __init__(self):
-        self.element = configparser.ConfigParser()
-        self.element.read(element_path, encoding='utf-8')
-
-    def __call__(self, *args):
-        return self.element.get(*args)
-
-    def __getattr__(self, item):
-        """
-        如element.Login，可以动态获取属性
-        :param item:
-        :return:
-        """
-        sections = self.element.items(item)
-        if sections:
-            return sections
-
-
 ini = ReadConfig()
-element = Element()
 
 if __name__ == '__main__':
     print(ini.url)
