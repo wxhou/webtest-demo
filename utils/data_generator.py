@@ -57,7 +57,7 @@ class Generator:
     def screen_expected(self):
         """预期图片"""
         screen_name = os.path.join(settings.root_dir, 'screenshot',
-                                   'Expected.png')
+                                   'expected','Expected.png')
         return screen_name
     @property
     def screenshot_name(self):
