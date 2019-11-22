@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
 # coding=utf-8
+'''
+@File    :   webpage.py
+@Time    :   2019/11/19 14:21:22
+@Author  :   wxhou
+@Version :   1.0
+@Contact :   wxhou@yunjinginc.com
+'''
+import sys
+sys.path.append('.')
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.touch_actions import TouchActions
@@ -8,8 +17,8 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
 from selenium import webdriver
+from common.image import pic
 from utils.log import log
-from PIL import Image
 import time
 
 
@@ -48,13 +57,13 @@ class WebPage:
                 else:
                     element = func(self.locate_mode[pattern], value)
             except InvalidElementStateException:
-                print("元素%s，清除输入框内容失败，用户不可编辑" % locator)
+                log.exception("元素%s，清除输入框内容失败，用户不可编辑" % locator)
                 return
             except NoSuchElementException:
-                print('当前页面没有找到元素%s' % locator)
+                log.exception('当前页面没有找到元素%s' % locator)
                 return
             except TimeoutException:
-                print('查找元素%s超时' % locator)
+                log.exception('查找元素%s超时' % locator)
                 return
             except Exception as e:
                 raise e
@@ -199,7 +208,7 @@ class WebPage:
         try:
             self.driver.switch_to.default_content()
         except Exception as e:
-            print(format(e))
+            log.exception(format(e))
         else:
             log.info("返回至默认的iframe")
 
@@ -212,12 +221,12 @@ class WebPage:
         for i in range(3, 0, -1):
             try:
                 assert now_handle1 != now_handle2
-                print('切换新标签成功！%s' % self.driver.title)
+                log.info('切换新标签成功！%s' % self.driver.title)
                 break
             except AssertionError:
-                print("切换标签失败！正在重试，还有%d机会！" % i)
+                log.exception("切换标签失败！正在重试，还有%d机会！" % i)
         else:
-            print("切换标签失败!请检查！")
+            log.error("切换标签失败!请检查！")
 
     def screenshots_of_element(self,
                                locator,
@@ -227,14 +236,7 @@ class WebPage:
         ele = self.findelement(locator, number)
         self.driver.save_screenshot(screenshot_path)
         self.shot_file(screenshot_path)
-        log.info("需要截图的元素坐标%s" % ele.location)
-        log.info("需要截图的元素大小%s" % ele.size)
-        shot = (ele.location['x'], ele.location['y'],
-                ele.location['x'] + ele.size['width'],
-                ele.location['y'] + ele.size['height'])
-        im = Image.open(screenshot_path)
-        im = im.crop(shot)
-        im.save(screenshot_path)
+        pic.element_shot(ele, screenshot_path)
         sleep()
         log.info("截图的路径是：%s" % screenshot_path)
         return screenshot_path
@@ -279,7 +281,7 @@ class WebPage:
     @property
     def getSource(self):
         """获取页面源代码"""
-        log.info("正在获取页面的源码！")
+        log.info("获取页面的源码！")
         return self.driver.page_source
 
     def shot_file(self, path):
@@ -299,5 +301,5 @@ class WebPage:
         self.driver.implicitly_wait(30)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

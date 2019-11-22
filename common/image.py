@@ -10,15 +10,17 @@
 import sys
 sys.path.append('.')
 import math
+import time
 import base64
 import operator
 from PIL import Image
 from fuzzywuzzy import fuzz
 from functools import reduce
-
+from utils.log import log
 
 class BaseComparison:
     """通过base64字符串对比图像"""
+
     def comparison(self, path):
         with open(path, 'rb') as f:
             basedata = base64.b64encode(f.read())
@@ -35,6 +37,19 @@ class BaseComparison:
 
 class ImageContrast:
     """图像对比算法，当result为0.0时结果正确"""
+    def element_shot(self, locator, path):
+        """元素截图"""
+        log.warning("需要截图的元素坐标%s" % locator.location)
+        log.warning("需要截图的元素大小%s" % locator.size)
+        shot = (locator.location['x'],
+                locator.location['y'],
+                locator.location['x'] + locator.size['width'],
+                locator.location['y'] + locator.size['height'])
+        im = Image.open(path)
+        im = im.crop(shot)
+        im.save(path)
+        time.sleep(1)
+
     def __call__(self, img1, img2):
         image1 = Image.open(img1)
         image2 = Image.open(img2)
@@ -48,7 +63,7 @@ class ImageContrast:
         return result
 
 
-ic = ImageContrast()
+pic = ImageContrast()
 if __name__ == '__main__':
     import os
     from settings import root_dir

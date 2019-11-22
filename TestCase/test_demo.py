@@ -14,7 +14,7 @@ from selenium import webdriver
 from settings import driver_path
 from Page.webpage import WebPage, sleep
 from PageObject.loginpage import Login
-from common.Imagecontrast import ic
+from common.image import pic
 from common.readconfig import ini
 from utils.data_generator import gen
 from utils.dirty_data import dirty_data
@@ -46,7 +46,7 @@ class TestLogin(unittest.TestCase):
         sleep(3)
         new_picture = login.login_shot(gen.screenshot_name)
         self.driver.refresh()
-        assert ic(new_picture,
+        assert pic(new_picture,
                   gen.screen_expected) == 0.0, "当前元素截图%s，与预期图片%s不匹配" % (
                       new_picture, gen.screen_expected)
 
