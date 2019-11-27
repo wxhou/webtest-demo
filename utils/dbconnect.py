@@ -17,7 +17,7 @@ root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 class SQLite:
     def __init__(self):
-        db_path = os.path.join(root_dir, 'database', 'sqlite3.sqlite')
+        db_path = os.path.join(root_dir, 'TestData', 'sqlite3.sqlite')
         self.con = sqlite3.connect(db_path)
         self.cur = self.con.cursor()
 

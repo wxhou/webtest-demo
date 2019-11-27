@@ -18,9 +18,9 @@ from fuzzywuzzy import fuzz
 from functools import reduce
 from utils.log import log
 
+
 class BaseComparison:
     """通过base64字符串对比图像"""
-
     def comparison(self, path):
         with open(path, 'rb') as f:
             basedata = base64.b64encode(f.read())
@@ -35,14 +35,13 @@ class BaseComparison:
             return False
 
 
-class ImageContrast:
+class Picture:
     """图像对比算法，当result为0.0时结果正确"""
     def element_shot(self, locator, path):
         """元素截图"""
         log.warning("需要截图的元素坐标%s" % locator.location)
         log.warning("需要截图的元素大小%s" % locator.size)
-        shot = (locator.location['x'],
-                locator.location['y'],
+        shot = (locator.location['x'], locator.location['y'],
                 locator.location['x'] + locator.size['width'],
                 locator.location['y'] + locator.size['height'])
         im = Image.open(path)
@@ -63,11 +62,6 @@ class ImageContrast:
         return result
 
 
-pic = ImageContrast()
+picture = Picture()
 if __name__ == '__main__':
-    import os
-    from settings import root_dir
-    path1 = os.path.join(root_dir, 'screenshot', 'Expected.png')
-    path2 = os.path.join(root_dir, 'screenshot', '有些.png')
-    img = BaseComparison()
-    print(img.calc_similar(path1, path2))
+    pass

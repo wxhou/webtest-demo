@@ -18,7 +18,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
 from selenium import webdriver
-from common.image import pic
+from common.image import picture
 from utils.log import log
 import time
 
@@ -52,13 +52,10 @@ class WebPage:
     def function(self, func, locator, number=None):
         """共用方法"""
         pattern, value = locator.split('==')
-        message = locator % number if number else locator
+        message = value % number if number else value
         if pattern in self.locate_mode:
             try:
-                if number:
-                    element = func(self.locate_mode[pattern], value % number)
-                else:
-                    element = func(self.locate_mode[pattern], value)
+                element = func(self.locate_mode[pattern], message)
             except InvalidElementStateException:
                 log.exception("元素{}，清除输入框内容失败，用户不可编辑".format(message))
                 return
@@ -79,6 +76,7 @@ class WebPage:
         '''打开网址并验证'''
         self.driver.set_page_load_timeout(60)
         try:
+            self.driver.maximize_window()
             self.driver.get(url)
             self.driver.implicitly_wait(10)
             log.info("打开网页：%s" % url)
@@ -151,6 +149,17 @@ class WebPage:
         log.info("元素%s的个数是：%s" % (locator, number))
         return number
 
+    def Exists(self, locator, number=None):
+        '''元素是否可见(sample)'''
+        pattern, value = locator.split('==')
+        message = value % number if number else value
+        log.info("检查元素{}在DOM中是否可见".format(message))
+        try:
+            self.driver.find_element(self.locate_mode[pattern], message)
+            return True
+        except:
+            return False
+
     def isElementExists(self, locator, number=None):
         '''元素是否可见'''
         message = locator % number if number else locator
@@ -164,8 +173,10 @@ class WebPage:
 
     def isSelected(self, locator, number=None):
         '''判断是否选中'''
+        message = locator % number if number else locator
         function = lambda *args: EC.element_located_selection_state_to_be(
             args, True)(self.driver)
+        log.info("检查元素:{}是否被选中".format(message))
         return self.function(function, locator, number)
 
     def action_click(self, locator, number=None):
@@ -247,7 +258,7 @@ class WebPage:
         ele = self.findelement(locator, number)
         self.driver.save_screenshot(screenshot_path)
         self.shot_file(screenshot_path)
-        pic.element_shot(ele, screenshot_path)
+        picture.element_shot(ele, screenshot_path)
         sleep()
         log.info("截图的路径是：%s" % screenshot_path)
         return screenshot_path

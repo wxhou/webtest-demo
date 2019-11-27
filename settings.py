@@ -18,9 +18,5 @@ root_dir = os.path.abspath(os.path.dirname(__file__))
 #系统环境
 environment = lambda x: x in platform.platform()
 
-#驱动目录
-driver_path = os.path.join(root_dir, 'driver', 'chromedriver') if environment(
-    'Darwin') else os.path.join(root_dir, 'driver', 'chromedriver.exe')
-
 if __name__ == "__main__":
     print(root_dir)
