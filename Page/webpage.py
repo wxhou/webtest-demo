@@ -8,6 +8,7 @@
 @Contact :   wxhou@yunjinginc.com
 '''
 import sys
+
 sys.path.append('.')
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -32,6 +33,7 @@ def sleep(seconds=1):
 
 class WebPage:
     """selenium基类"""
+
     def __init__(self, driver):
         self.locate_mode = {
             'css': By.CSS_SELECTOR,
@@ -50,6 +52,7 @@ class WebPage:
     def function(self, func, locator, number=None):
         """共用方法"""
         pattern, value = locator.split('==')
+        message = locator % number if number else locator
         if pattern in self.locate_mode:
             try:
                 if number:
@@ -57,16 +60,16 @@ class WebPage:
                 else:
                     element = func(self.locate_mode[pattern], value)
             except InvalidElementStateException:
-                log.exception("元素%s，清除输入框内容失败，用户不可编辑" % locator)
+                log.exception("元素{}，清除输入框内容失败，用户不可编辑".format(message))
                 return
             except NoSuchElementException:
-                log.exception('当前页面没有找到元素%s' % locator)
+                log.exception('当前页面没有找到元素{}'.format(message))
                 return
             except TimeoutException:
-                log.exception('查找元素%s超时' % locator)
+                log.exception('查找元素{}超时'.format(message))
                 return
             except Exception as e:
-                raise e
+                raise format(e)
             else:
                 return element
         else:
@@ -77,6 +80,7 @@ class WebPage:
         self.driver.set_page_load_timeout(60)
         try:
             self.driver.get(url)
+            self.driver.implicitly_wait(10)
             log.info("打开网页：%s" % url)
         except TimeoutException:
             raise ("打开%s超时请检查网络或网址服务器" % url)
@@ -104,36 +108,41 @@ class WebPage:
 
     def is_clear(self, locator, number=None):
         '''清空输入框'''
+        message = locator % number if number else locator
         self.findelement(locator, number).clear()
-        log.info("清空输入框：%s" % locator)
+        log.info("清空输入框：{}".format(message))
         self.driver.implicitly_wait(0.5)
 
     def input_text(self, locator, number=None, text=None):
         '''输入(输入前先清空)'''
+        message = locator % number if number else locator
         self.is_clear(locator, number)
         self.findelement(locator, number).send_keys(text)
-        log.info("输入%s，在元素%s中" % (text, locator))
+        log.info("在元素%s中输入%s" % (text, message))
 
     def is_click(self, locator, number=None):
         '''点击'''
+        message = locator % number if number else locator
         function = lambda *args: self.wait.until(
             EC.element_to_be_clickable(args))
         ele = self.function(function, locator, number)
         ele.click()
-        log.info("点击元素%s" % locator)
+        log.info("点击元素%s" % message)
         sleep()
 
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
+        message = locator % number if number else locator
         _text = self.findelement(locator, number).text
-        log.info("获取元素%s文字：%s" % (locator, _text))
+        log.info("获取元素%s文字：[%s]" % (message, _text))
         return _text
 
     def textInElement(self, locator, number=None, text=None):
         '''检查某段文本在输入框中'''
+        message = locator % number if number else locator
         function = lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver)
-        log.info("检查文本【%s】在输入框%s中" % (text, locator))
+        log.info("检查文本【%s】在输入框%s中" % (text, message))
         return self.function(function, locator, number)
 
     def isElementNum(self, locator):
@@ -144,9 +153,10 @@ class WebPage:
 
     def isElementExists(self, locator, number=None):
         '''元素是否可见'''
+        message = locator % number if number else locator
         function = lambda *args: self.wait.until(
             EC.visibility_of_element_located(args))
-        log.info("检查元素%s是否可见" % locator)
+        log.info("检查元素{}是否可见".format(message))
         if self.function(function, locator, number):
             return True
         else:
@@ -161,10 +171,11 @@ class WebPage:
     def action_click(self, locator, number=None):
         '''使用鼠标点击'''
         sleep()
+        message = locator % number if number else locator
         element = self.findelement(locator, number)
         self.driver.implicitly_wait(1)
         self.action.click(element).perform()
-        log.info("使用鼠标点击%s" % locator)
+        log.info("使用鼠标点击{}".format(message))
         sleep()
 
     def action_sendkeys(self, locator, number=None, text=None):
@@ -245,9 +256,10 @@ class WebPage:
         # 该函数的编写来源于robot-framework-selenium
         """聚焦元素"""
         sleep()
+        message = locator % number if number else locator
         ele = self.findelement(locator, number)
         self.driver.execute_script("arguments[0].focus();", ele)
-        log.info("元素不可见，正在聚焦元素%s！" % locator)
+        log.info("元素不可见，正在聚焦元素%s！" % message)
 
     def click_drop_down(
             self,
@@ -297,7 +309,7 @@ class WebPage:
     def refresh(self):
         '''刷新页面F5'''
         self.driver.refresh()
-        log.info("刷新网页：%s" % self.driver.current_url())
+        log.info("刷新当前网页：%s" % self.driver.current_url())
         self.driver.implicitly_wait(30)
 
 
