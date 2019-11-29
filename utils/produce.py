@@ -11,9 +11,9 @@ import sys
 sys.path.append('.')
 import os
 import settings
-from faker import Factory
+from faker import Faker
 
-faker = Factory().create('zh_CN')
+faker = Faker('zh_CN')
 
 
 class Produce:

@@ -3,12 +3,11 @@
 from Page.webpage import WebPage, sleep
 from common.readelemnts import Element
 
-
 login = Element('login')
 home = Element('home')
 
 
-class Login(WebPage):
+class LoginPage(WebPage):
     def login(self, user, pwd):
         self.input_text(login.账号, text=user)
         self.input_text(login.密码, text=pwd)
@@ -16,8 +15,7 @@ class Login(WebPage):
         sleep()
 
     def login_shot(self, srceenshot_name):
-        self.screenshots_of_element(home.头像,
-                                    screenshot_path=srceenshot_name)
+        self.screenshots_of_element(home.头像, path=srceenshot_name)
         return srceenshot_name
 
     def quit_login(self):

@@ -11,7 +11,7 @@ import sys
 sys.path.append('.')
 import unittest
 from selenium import webdriver
-from PageObject.loginpage import Login
+from PageObject.loginpage import LoginPage
 from common.image import picture
 from common.readconfig import ini
 from utils.produce import produce
@@ -32,15 +32,15 @@ class TestLogin(unittest.TestCase):
 
     def setUp(self) -> None:
         self.imgs = []
-        login = Login(self.driver)
+        login = LoginPage(self.driver)
         login.get_url(ini.url)
 
     def tearDown(self):
-        login = Login(self.driver)
+        login = LoginPage(self.driver)
         login.quit_login()
 
     def test_001(self):
-        login = Login(self.driver)
+        login = LoginPage(self.driver)
         login.login('admin', '123456')
         sleep(3)
         new_picture = login.login_shot(produce.screenshot_name)
