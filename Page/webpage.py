@@ -115,10 +115,8 @@ class WebPage:
 
     def isElementExists(self, locator, number=None):  #判断元素是否可见
         '''元素是否可见'''
-        message = locator % number if number else locator
         function = lambda *args: self.wait.until(
             EC.visibility_of_element_located(args))
-        log.info("检查元素{}是否可见".format(message))
         if self.function(function, locator, number):
             return True
         else:
@@ -140,8 +138,8 @@ class WebPage:
 
     def is_clear(self, locator, number=None):
         '''清空输入框'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         message = locator % number if number else locator
         self.findelement(locator, number).clear()
         log.info("清空输入框：{}".format(message))
@@ -149,17 +147,17 @@ class WebPage:
 
     def input_text(self, locator, number=None, text=None):
         '''输入(输入前先清空)'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         message = locator % number if number else locator
         self.is_clear(locator, number)
         self.findelement(locator, number).send_keys(text)
-        log.info("在元素%s中输入%s" % (text, message))
+        log.info("在元素%s中输入%s" % (message, text))
 
     def is_click(self, locator, number=None):
         '''点击'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         message = locator % number if number else locator
         function = lambda *args: self.wait.until(
             EC.element_to_be_clickable(args))
@@ -170,38 +168,38 @@ class WebPage:
 
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         message = locator % number if number else locator
         _text = self.findelement(locator, number).text
         log.info("获取元素%s文字：[%s]" % (message, _text))
         return _text
 
+    def is_Selected(self, locator, number=None):  #该方法暂不可用
+        '''判断是否选中'''
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
+        message = locator % number if number else locator
+        function = lambda *args: self.wait.until(
+            EC.element_located_selection_state_to_be(args, True))
+        log.info("检查元素:{} 是否被选中".format(message))
+        return self.function(function, locator, number)
+
     def textInElement(self, locator, number=None, text=None):
         '''检查某段文本在输入框中'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         message = locator % number if number else locator
         function = lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver)
         log.info("检查文本【%s】在输入框%s中" % (text, message))
         return self.function(function, locator, number)
 
-    def isSelected(self, locator, number=None):
-        '''判断是否选中'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
-        message = locator % number if number else locator
-        function = lambda *args: EC.element_located_selection_state_to_be(
-            args, True)(self.driver)
-        log.info("检查元素:{} 是否被选中".format(message))
-        return self.function(function, locator, number)
-
     def action_click(self, locator, number=None):
         '''使用鼠标点击'''
         sleep()
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         message = locator % number if number else locator
         element = self.findelement(locator, number)
         self.driver.implicitly_wait(1)
@@ -212,8 +210,8 @@ class WebPage:
     def action_sendkeys(self, locator, number=None, text=None):
         '''action的输入方法'''
         sleep()
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         element = self.findelement(locator, number)
         sleep()
         self.is_click(locator, number)
@@ -224,16 +222,16 @@ class WebPage:
 
     def upload_File(self, locator, number=None, filepath=None):
         '''上传文件'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         self.findelement(locator, number).send_keys(filepath)
         log.info("正在上传文件：%s" % filepath)
         sleep(5)
 
     def screenshots_of_element(self, locator, number=None, path=None):
         '''对某个元素进行截图,并返回截图路径'''
-        if not self.isElementExists(locator, number=None):  #元素不可见则聚焦
-            self.focus(locator, number=None)
+        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
+            self.focus(locator, number=number)
         ele = self.findelement(locator, number)
         self.driver.save_screenshot(path)
         self.shot_file(path)
