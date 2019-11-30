@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
 import sys
+
 sys.path.append('.')
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
@@ -13,6 +14,7 @@ from selenium import webdriver
 from common.image import picture
 from utils.log import log
 import time
+
 """
 selenium基类
 本文件存放了selenium基类的深度封装方法
@@ -30,6 +32,7 @@ def sleep(seconds=1):
 
 class WebPage:
     """selenium基类"""
+
     def __init__(self, driver):
         self.locate_mode = {
             'css': By.CSS_SELECTOR,
@@ -45,7 +48,7 @@ class WebPage:
         self.action = ActionChains(self.driver)
         self.touch = TouchActions(self.driver)
 
-    def function(self, func, locator, number=None):  # 共有方法
+    def function(self, func, locator, number=None):
         """共用方法"""
         if "==" not in locator:
             raise AttributeError("Element does not specify a type！")
@@ -84,7 +87,7 @@ class WebPage:
             self.driver), "地址包含关系不正确，应为%s，实为%s" % (url,
                                                    self.driver.current_url)
 
-    def Assert_title(self, text):  #验证网页的title文字
+    def Assert_title(self, text):
         """验证网页的title文字"""
         title1 = EC.title_is(text)
         title2 = self.driver.title
@@ -102,7 +105,7 @@ class WebPage:
             *args))
         return self.function(function, locator, number)
 
-    def Exists(self, locator, number=None):  #判断元素是否在DOM中
+    def Exists(self, locator, number=None):  # 判断元素是否在DOM中
         '''元素是否存在(sample)'''
         pattern, value = locator.split('==')
         message = value % number if number else value
@@ -113,24 +116,19 @@ class WebPage:
         except:
             return False
 
-    def isElementExists(self, locator, number=None):  #判断元素是否可见
+    def isElementExists(self, locator, number=None):
         '''元素是否可见'''
         function = lambda *args: self.wait.until(
             EC.visibility_of_element_located(args))
-        if self.function(function, locator, number):
-            return True
-        else:
-            return False
+        return self.function(function, locator, number)
 
     def focus(self, locator, number=None):  # 该函数的编写来源于robot-framework-selenium
         """聚焦元素"""
-        sleep()
-        message = locator % number if number else locator
         ele = self.findelement(locator, number)
         self.driver.execute_script("arguments[0].focus();", ele)
-        log.info("元素不可见，正在聚焦元素%s！" % message)
+        log.info("======正在聚焦元素%s！======" % (locator % number if number else locator))
 
-    def isElementNum(self, locator):  #获取相同元素的个数
+    def isElementNum(self, locator):  # 获取相同元素的个数
         '''获取相同元素的个数'''
         number = len(self.findelements(locator))
         log.info("元素%s的个数是：%s" % (locator, number))
@@ -138,80 +136,57 @@ class WebPage:
 
     def is_clear(self, locator, number=None):
         '''清空输入框'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
         self.findelement(locator, number).clear()
-        log.info("清空输入框：{}".format(message))
+        log.info("清空输入框：%s"%(locator % number if number else locator))
         self.driver.implicitly_wait(0.5)
 
     def input_text(self, locator, number=None, text=None):
         '''输入(输入前先清空)'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
         self.is_clear(locator, number)
         self.findelement(locator, number).send_keys(text)
-        log.info("在元素%s中输入%s" % (message, text))
+        log.info("在元素%s中输入%s" % ((locator % number if number else locator), text))
 
     def is_click(self, locator, number=None):
         '''点击'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
         function = lambda *args: self.wait.until(
             EC.element_to_be_clickable(args))
         ele = self.function(function, locator, number)
         ele.click()
-        log.info("点击元素%s" % message)
+        log.info("点击元素%s" % (locator % number if number else locator))
         sleep()
 
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
         _text = self.findelement(locator, number).text
-        log.info("获取元素%s文字：[%s]" % (message, _text))
+        log.info("获取元素%s文字：[%s]" % ((locator % number if number else locator), _text))
         return _text
-
-    def is_Selected(self, locator, number=None):  #该方法暂不可用
-        '''判断是否选中'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
-        function = lambda *args: self.wait.until(
-            EC.element_located_selection_state_to_be(args, True))
-        log.info("检查元素:{} 是否被选中".format(message))
-        return self.function(function, locator, number)
 
     def textInElement(self, locator, number=None, text=None):
         '''检查某段文本在输入框中'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
         function = lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver)
-        log.info("检查文本【%s】在输入框%s中" % (text, message))
+        log.info("检查文本【%s】在输入框%s中" % (text, (locator % number if number else locator)))
+        return self.function(function, locator, number)
+
+    def isSelected(self, locator, number=None):
+        '''判断是否选中'''
+        function = lambda *args: self.wait.until(
+            EC.element_located_selection_state_to_be(args, True))
+        log.info("检查元素:%s 是否被选中"%(locator % number if number else locator))
         return self.function(function, locator, number)
 
     def action_click(self, locator, number=None):
         '''使用鼠标点击'''
         sleep()
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
-        message = locator % number if number else locator
         element = self.findelement(locator, number)
         self.driver.implicitly_wait(1)
         self.action.click(element).perform()
-        log.info("使用鼠标点击：{}".format(message))
+        log.info("使用鼠标点击：%s"%(locator % number if number else locator))
         sleep()
 
     def action_sendkeys(self, locator, number=None, text=None):
         '''action的输入方法'''
         sleep()
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
         element = self.findelement(locator, number)
         sleep()
         self.is_click(locator, number)
@@ -222,16 +197,13 @@ class WebPage:
 
     def upload_File(self, locator, number=None, filepath=None):
         '''上传文件'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
         self.findelement(locator, number).send_keys(filepath)
         log.info("正在上传文件：%s" % filepath)
         sleep(5)
 
     def screenshots_of_element(self, locator, number=None, path=None):
         '''对某个元素进行截图,并返回截图路径'''
-        if not self.isElementExists(locator, number=number):  #元素不可见则聚焦
-            self.focus(locator, number=number)
+        self.focus(locator, number)  # 元素不可见则聚焦
         ele = self.findelement(locator, number)
         self.driver.save_screenshot(path)
         self.shot_file(path)
@@ -240,21 +212,13 @@ class WebPage:
         log.info("截图的路径是：%s" % path)
         return path
 
-    def select_drop_down(self, locator, number=None, **kwargs):
+    def select_drop_down(self, locator, number=None):
         """选择下拉框"""
         ele = self.findelement(locator, number)
         sleep(2)
         # 这里一定要加等待时间，否则会引起如下报错
         # Element is not currently visible and may not be manipulated
-        if index:
-            Select(ele).select_by_index(index)
-            log.info("正在下拉框中选择：第%s项" % index)
-        elif value:
-            Select(ele).select_by_value(value)
-            log.info("正在下拉框中选择：%s" % value)
-        elif text:
-            Select(ele).select_by_visible_text(text)
-            log.info("正在下拉框中选择：%s" % text)
+        return Select(ele)
 
     def alertTextExists(self):
         "判断弹框是否出现，并返回弹框的文字"
