@@ -128,6 +128,17 @@ class WebPage:
         self.driver.execute_script("arguments[0].focus();", ele)
         log.info("======正在聚焦元素%s！======" % (locator % number if number else locator))
 
+    def inline_scroll_bar(self,element=None,func='Left',number='10000'):
+        """
+        内嵌滚动条（默认为向右）
+        :param types: ['ById','ByClass']
+        :param element: value
+        :param func: ['Left','Top']
+        :param number: ['10000','0']
+        """
+        js1 = 'document.getElementsByClassName("%s")[0].scroll%s=%s'%(element,func,number)
+        self.driver.execute_script(js1)
+        
     def isElementNum(self, locator):  # 获取相同元素的个数
         '''获取相同元素的个数'''
         number = len(self.findelements(locator))
