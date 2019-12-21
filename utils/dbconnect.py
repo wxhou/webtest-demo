@@ -11,14 +11,11 @@ import sys
 sys.path.append('.')
 import os
 import sqlite3
-
-root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-
+import settings
 
 class SQLite:
     def __init__(self):
-        db_path = os.path.join(root_dir, 'TestData', 'sqlite3.sqlite')
-        self.con = sqlite3.connect(db_path)
+        self.con = sqlite3.connect(settings.DB_PATH)
         self.cur = self.con.cursor()
 
     def __enter__(self):

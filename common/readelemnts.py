@@ -11,18 +11,16 @@ import sys
 sys.path.append('.')
 import os
 import yaml
-
-root_dir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-element_path = lambda x: os.path.join(root_dir, 'PageElements', '{}.yaml'.
-                                      format(x))
+import settings
 
 
 class Element:
     """获取元素"""
     def __init__(self, name):
-        if not os.path.exists(element_path(name)):
-            raise FileNotFoundError("%s 文件不存在！" % element_path(name))
-        with open(element_path(name), encoding='utf-8') as f:
+        self.element = settings.ELEMENT_PATH(name)
+        if not os.path.exists(self.element):
+            raise FileNotFoundError("%s 文件不存在！" % self.element)
+        with open(self.element, encoding='utf-8') as f:
             self.data = yaml.safe_load(f.read())
 
     def __getattr__(self, item):

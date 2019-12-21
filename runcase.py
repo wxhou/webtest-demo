@@ -14,8 +14,7 @@ import settings
 import unittest
 from common.HTMLTestRunner_cn import HTMLTestRunner
 
-test_suites = os.path.join(settings.root_dir, 'TestCase')
-discover = unittest.defaultTestLoader.discover(test_suites, pattern="test*.py")
+discover = unittest.defaultTestLoader.discover(settings.TEST_SUITES, pattern="test*.py")
 
 if __name__ == "__main__":
     try:

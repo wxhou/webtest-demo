@@ -56,13 +56,13 @@ class Produce:
     @property
     def screen_expected(self):
         """预期图片"""
-        screen_name = os.path.join(settings.root_dir, 'TestData',
+        screen_name = os.path.join(settings.BASE_DIR, 'TestData',
                                    'expected','Expected.png')
         return screen_name
     @property
     def screenshot_name(self):
         """截图名称"""
-        return os.path.join(settings.root_dir, 'screenshot', '%s.png' % produce.word)
+        return os.path.join(settings.SCREENSHOT_PATH, '%s.png' % produce.word)
 
 
 produce = Produce()

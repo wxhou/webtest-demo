@@ -13,13 +13,11 @@ import configparser
 import settings
 import os
 
-ini_path = os.path.join(settings.root_dir, 'config.ini')
-
 
 class ReadConfig:
     def __init__(self):
         self.config = configparser.RawConfigParser()
-        self.config.read(ini_path)
+        self.config.read(settings.INI_PATH)
 
     @property
     def url(self):
