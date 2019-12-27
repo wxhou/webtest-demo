@@ -13,10 +13,25 @@ import os
 import platform
 
 #项目的根目录
-root_dir = os.path.abspath(os.path.dirname(__file__))
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-#系统环境
-environment = lambda x: x in platform.platform()
+#配置文件目录
+INI_PATH = os.path.join(BASE_DIR, 'config.ini')
+
+#页面元素的目录
+ELEMENT_PATH = lambda x: os.path.join(BASE_DIR, 'PageElements', '%s.yaml' % x)
+
+# 截图目录
+SCREENSHOT_PATH = os.path.join(BASE_DIR, 'screenshot')
+
+# 数据库目录
+DB_PATH = os.path.join(BASE_DIR, 'TestData', 'sqlite3.sqlite')
+
+#日志目录
+LOG_PATH = os.path.join(BASE_DIR, 'logs')
+
+# 测试集
+TEST_SUITES = os.path.join(settings.BASE_DIR, 'TestCase')
 
 if __name__ == "__main__":
     print(root_dir)

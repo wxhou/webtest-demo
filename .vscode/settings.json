@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/Users/hoou/opt/anaconda3/bin/python",
+    "python.pythonPath": "D:\\Python3\\python.exe",
     "python.linting.enabled": false,
     "python.testing.unittestArgs": [
         "-v",
@@ -12,6 +12,6 @@
     "python.testing.nosetestsEnabled": false,
     "python.testing.unittestEnabled": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true
+    "python.linting.pylintEnabled": true,
+    "python.formatting.provider": "yapf"
 }
