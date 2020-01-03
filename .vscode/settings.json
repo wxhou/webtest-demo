@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "D:\\Python3\\python.exe",
+    "python.pythonPath": "/Users/hoou/opt/anaconda3/bin/python",
     "python.linting.enabled": false,
     "python.testing.unittestArgs": [
         "-v",

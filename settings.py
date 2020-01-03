@@ -31,7 +31,7 @@ DB_PATH = os.path.join(BASE_DIR, 'TestData', 'sqlite3.sqlite')
 LOG_PATH = os.path.join(BASE_DIR, 'logs')
 
 # 测试集
-TEST_SUITES = os.path.join(settings.BASE_DIR, 'TestCase')
+TEST_SUITES = os.path.join(BASE_DIR, 'TestCase')
 
 if __name__ == "__main__":
-    print(root_dir)
+    print(BASE_DIR)

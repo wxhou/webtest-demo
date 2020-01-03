@@ -30,7 +30,7 @@ class Dirty:
                 start_time = os.path.getmtime(
                     os.path.join(settings.SCREENSHOT_PATH, i))
                 if start_time < self.end_time:
-                    delete_pic = os.path.join(png_path, i)
+                    delete_pic = os.path.join(settings.SCREENSHOT_PATH, i)
                     os.remove(delete_pic)
                     print("删除%s完毕！" % delete_pic)
                     ver = False

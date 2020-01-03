@@ -24,7 +24,11 @@ def sleep(seconds=1):
     :return 有些提示框不强制等待，只用显式等待会导致执行报错
     '''
     time.sleep(seconds)
-    log.info("\t等待%s秒！" % seconds)
+
+
+def element_value(locator, number):
+    """元素值"""
+    return locator % number if number else locator
 
 
 LOCATE_MODE = {
@@ -53,14 +57,13 @@ class WebPage:
         if "==" in locator:
             pattern, value = locator.split('==')
             if pattern in LOCATE_MODE:
-                message = value % number if number else value
-                return func(LOCATE_MODE[pattern], message)
+                return func(LOCATE_MODE[pattern], element_value(value, number))
             else:
                 raise AttributeError('Element Type is ERROR!')
         else:
             raise AttributeError("Element does not specify a type！")
 
-    def get_url(self, url):
+    def get_url(self, url, title=None):
         '''打开网址并验证'''
         self.driver.maximize_window()
         self.driver.set_page_load_timeout(60)
@@ -69,13 +72,10 @@ class WebPage:
             self.driver.implicitly_wait(10)
             log.info("打开网页：%s" % url)
         except TimeoutException:
-            raise TimeoutException("打开%s超时,请检查网络或网址服务器" % url)
-
-    def assert_title(self, text):
-        """验证网页的title文字"""
-        title1 = EC.title_is(text)
-        title2 = self.driver.title
-        assert title1(self.driver), "title不正确，应为%s，实为%s" % (text, title2)
+            raise ("打开%s超时,请检查网络或网址服务器" % url)
+        if title:
+            title2 = self.driver.title
+            assert EC.title_is(title)(self.driver), "网页title不正确，应为%s，实为%s" % (title, title2)
 
     def findelement(self, locator, number=None):
         """寻找单个元素"""
@@ -110,9 +110,9 @@ class WebPage:
         """聚焦元素"""
         ele = self.findelement(locator, number)
         self.driver.execute_script("arguments[0].focus();", ele)
-        log.info("======元素不可见，正在聚焦元素%s！======" % (locator % number if number else locator))
+        log.info("======元素不可见，正在聚焦元素%s！======" % element_value(locator, number))
 
-    def inline_scroll_bar(self, element=None, func='Left', number='10000'):
+    def inline_scroll_bar(self, element, func='Left', number='10000'):
         """
         内嵌滚动条（默认为向右）
         :param element: value
@@ -131,41 +131,42 @@ class WebPage:
     def is_clear(self, locator, number=None):
         '''清空输入框'''
         self.findelement(locator, number).clear()
-        log.info("清空输入框：%s" % (locator % number if number else locator))
+        log.info("清空输入框：%s" % element_value(locator, number))
         self.driver.implicitly_wait(1)
 
     def input_text(self, locator, text, number=None):
         '''输入(输入前先清空)'''
         self.is_clear(locator, number)
         self.findelement(locator, number).send_keys(text)
-        log.info("在元素%s中输入%s" % ((locator % number if number else locator), text))
+        log.info("在元素%s中输入%s" % (element_value(locator, number), text))
 
     def is_click(self, locator, number=None):
         '''点击'''
+        msg = element_value(locator, number)
         function = lambda *args: self.wait.until(
-            EC.element_to_be_clickable(args))
+            EC.element_to_be_clickable(args), message="点击元素%s失败！" % msg)
         self.function(function, locator, number).click()
-        log.info("点击元素%s" % (locator % number if number else locator))
+        log.info("点击元素%s" % msg)
         sleep()
 
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
         __text = self.findelement(locator, number).text
-        log.info("获取元素%s文字：[%s]" % ((locator % number if number else locator), __text))
+        log.info("获取元素%s文字：[%s]" % (element_value(locator, number), __text))
         return __text
 
     def textInElement(self, locator, text, number=None):
         '''检查某段文本在输入框中'''
         function = lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver)
-        log.info("检查文本【%s】在输入框%s中" % (text, (locator % number if number else locator)))
+        log.info("检查文本【%s】在输入框%s中" % (text, element_value(locator, number)))
         return self.function(function, locator, number)
 
     def isSelected(self, locator, number=None):
         '''判断是否选中'''
         function = lambda *args: self.wait.until(
             EC.element_located_selection_state_to_be(args, True))
-        log.info("检查元素:%s 是否被选中" % (locator % number if number else locator))
+        log.info("检查元素:%s 是否被选中" % element_value(locator, number))
         return self.function(function, locator, number)
 
     def action_click(self, locator, number=None):
@@ -173,7 +174,7 @@ class WebPage:
         element = self.findelement(locator, number)
         self.driver.implicitly_wait(1)
         self.action.click(element).perform()
-        log.info("使用鼠标点击：%s" % (locator % number if number else locator))
+        log.info("使用鼠标点击：%s" % element_value(locator, number))
         sleep()
 
     def action_sendkeys(self, locator, text, number=None):
@@ -228,12 +229,8 @@ class WebPage:
 
     def switchToDefaultFrame(self):
         """返回默认"""
-        try:
-            self.driver.switch_to.default_content()
-        except Exception as e:
-            log.exception(format(e))
-        else:
-            log.info("返回至默认的iframe")
+        self.driver.switch_to.default_content()
+        log.info("返回至默认的iframe")
 
     def switchWindowshandle(self):
         '''切换最新的标签'''
