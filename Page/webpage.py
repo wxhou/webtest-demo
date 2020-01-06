@@ -21,7 +21,7 @@ selenium基类
 def sleep(seconds=1):
     '''
     等待时间
-    :return 有些提示框不强制等待，只用显式等待会导致执行报错
+    有些步骤不强制等待，只用显式等待会导致执行报错
     '''
     time.sleep(seconds)
 
@@ -52,16 +52,11 @@ class WebPage:
         self.action = ActionChains(self.driver)
         self.touch = TouchActions(self.driver)
 
-    def function(self, func, locator, number=None):
-        """共用方法"""
-        if "==" in locator:
-            pattern, value = locator.split('==')
-            if pattern in LOCATE_MODE:
-                return func(LOCATE_MODE[pattern], element_value(value, number))
-            else:
-                raise AttributeError('Element Type is ERROR!')
-        else:
-            raise AttributeError("Element does not specify a type！")
+    @staticmethod
+    def selector(func, locator, number=None):
+        """选择器"""
+        pattern, value = locator.split('==')
+        return func(LOCATE_MODE[pattern], element_value(value, number))
 
     def get_url(self, url, title=None):
         '''打开网址并验证'''
@@ -70,7 +65,7 @@ class WebPage:
         try:
             self.driver.get(url)
             self.driver.implicitly_wait(10)
-            log.info("打开网页：%s" % url)
+            log.info("\t打开网页：%s" % url)
         except TimeoutException:
             raise ("打开%s超时,请检查网络或网址服务器" % url)
         if title:
@@ -79,19 +74,21 @@ class WebPage:
 
     def findelement(self, locator, number=None):
         """寻找单个元素"""
-        function = lambda *args: self.wait.until(lambda x: x.find_element(*args))
-        return self.function(function, locator, number)
+        function = lambda *args: self.wait.until(lambda x: x.find_element(*args),
+                                                 message="查找单个元素%s失败！" % element_value(locator, number))
+        return WebPage.selector(function, locator, number)
 
     def findelements(self, locator, number=None):
         '''查找多个相同的元素'''
-        function = lambda *args: self.wait.until(lambda x: x.find_elements(*args))
-        return self.function(function, locator, number)
+        function = lambda *args: self.wait.until(lambda x: x.find_elements(*args),
+                                                 message="查找单个元素%s失败！" % element_value(locator, number))
+        return WebPage.selector(function, locator, number)
 
     def Exists(self, locator, number=None):  # 判断元素是否在DOM中
         '''元素是否存在(DOM)'''
         function = lambda *args: EC.presence_of_element_located(args)(self.driver)
         try:
-            self.function(function, locator, number=number)
+            WebPage.selector(function, locator, number=number)
             return True
         except:
             return False
@@ -101,21 +98,18 @@ class WebPage:
         function = lambda *args: WebDriverWait(self.driver, self.visible).until(
             EC.visibility_of_element_located(args))
         try:
-            self.function(function, locator, number)
+            WebPage.selector(function, locator, number)
             return True
         except:
             return False
 
-    def focus(self, locator, number=None):  # 该函数的编写来源于robot-framework-selenium
+    def focus(self, element):  # 该函数的编写来源于robot-framework-selenium
         """聚焦元素"""
-        ele = self.findelement(locator, number)
-        self.driver.execute_script("arguments[0].focus();", ele)
-        log.info("======元素不可见，正在聚焦元素%s！======" % element_value(locator, number))
+        self.driver.execute_script("arguments[0].focus();", element)
 
     def inline_scroll_bar(self, element, func='Left', number='10000'):
         """
         内嵌滚动条（默认为向右）
-        :param element: value
         :param func: ['Left','Top']
         :param number: ['10000','0']
         """
@@ -130,14 +124,21 @@ class WebPage:
 
     def is_clear(self, locator, number=None):
         '''清空输入框'''
-        self.findelement(locator, number).clear()
+        ele = self.findelement(locator, number)
+        self.focus(ele)
+        ele.clear()
         log.info("清空输入框：%s" % element_value(locator, number))
         self.driver.implicitly_wait(1)
 
     def input_text(self, locator, text, number=None):
         '''输入(输入前先清空)'''
-        self.is_clear(locator, number)
-        self.findelement(locator, number).send_keys(text)
+        msg = element_value(locator, number)
+        function = lambda *args: self.wait.until(
+            EC.element_to_be_clickable(args), message="在元素%s中，输入【%s】失败！" % (msg, text))
+        ele = WebPage.selector(function, locator, number)
+        self.focus(ele)
+        ele.clear()
+        ele.send_keys(text)
         log.info("在元素%s中输入%s" % (element_value(locator, number), text))
 
     def is_click(self, locator, number=None):
@@ -145,9 +146,11 @@ class WebPage:
         msg = element_value(locator, number)
         function = lambda *args: self.wait.until(
             EC.element_to_be_clickable(args), message="点击元素%s失败！" % msg)
-        self.function(function, locator, number).click()
+        ele = WebPage.selector(function, locator, number)
+        self.focus(ele)
+        ele.click()
         log.info("点击元素%s" % msg)
-        sleep()
+        self.driver.implicitly_wait(1)
 
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
@@ -160,53 +163,55 @@ class WebPage:
         function = lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver)
         log.info("检查文本【%s】在输入框%s中" % (text, element_value(locator, number)))
-        return self.function(function, locator, number)
+        return WebPage.selector(function, locator, number)
 
     def isSelected(self, locator, number=None):
         '''判断是否选中'''
         function = lambda *args: self.wait.until(
             EC.element_located_selection_state_to_be(args, True))
         log.info("检查元素:%s 是否被选中" % element_value(locator, number))
-        return self.function(function, locator, number)
+        return WebPage.selector(function, locator, number)
 
     def action_click(self, locator, number=None):
         '''使用鼠标点击'''
         element = self.findelement(locator, number)
-        self.driver.implicitly_wait(1)
-        self.action.click(element).perform()
+        self.focus(element)
+        self.action.pause(0.5).click(element).pause(0.5).perform()
         log.info("使用鼠标点击：%s" % element_value(locator, number))
-        sleep()
+        self.driver.implicitly_wait(1)
 
     def action_sendkeys(self, locator, text, number=None):
         '''action的输入方法'''
         element = self.findelement(locator, number)
-        sleep()
-        self.is_click(locator, number)
-        self.action.click(element).send_keys(text)
+        self.focus(element)
+        self.action.pause(0.5).click(element).pause(0.5).send_keys(text)
         self.action.perform()
         log.info("使用鼠标方法输入：%s" % text)
         self.action._actions.pop()  # 防止重复输入
 
     def upload_File(self, locator, filepath, number=None):
         '''上传文件'''
-        self.findelement(locator, number).send_keys(filepath)
+        ele = self.findelement(locator, number)
+        self.focus(ele)
+        ele.send_keys(filepath)
         log.info("正在上传文件：%s" % filepath)
         sleep(5)
 
     def screenshots_of_element(self, locator, path, number=None):
         '''对某个元素进行截图,并返回截图路径'''
-        self.focus(locator, number)  # 元素不可见则聚焦
         ele = self.findelement(locator, number)
+        self.focus(ele)  # 元素不可见则聚焦
         self.driver.save_screenshot(path)
         self.shot_file(path)
         picture.element_shot(ele, path)
-        sleep()
+        self.driver.implicitly_wait(1)
         log.info("截图的路径是：%s" % path)
         return path
 
     def select_drop_down(self, locator, number=None):
         """选择下拉框"""
         ele = self.findelement(locator, number)
+        self.focus(ele)
         sleep(2)
         # 这里一定要加等待时间，否则会引起如下报错
         # Element is not currently visible and may not be manipulated
@@ -225,7 +230,7 @@ class WebPage:
         function = lambda *args: self.wait.until(
             EC.frame_to_be_available_and_switch_to_it(args))
         log.info("切换最新的iframe")
-        return self.function(function, locator, number)
+        return WebPage.selector(function, locator, number)
 
     def switchToDefaultFrame(self):
         """返回默认"""
