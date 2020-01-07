@@ -17,7 +17,7 @@ import settings
 class Element:
     """获取元素"""
     def __init__(self, name):
-        self.element = settings.ELEMENT_PATH(name)
+        self.element = os.path.join(settings.ELEMENT_PATH, '%s.yaml' % name)
         if not os.path.exists(self.element):
             raise FileNotFoundError("%s 文件不存在！" % self.element)
         with open(self.element, encoding='utf-8') as f:

@@ -14,6 +14,7 @@ from selenium import webdriver
 from PageObject.loginpage import LoginPage
 from common.image import image_contrast
 from common.readconfig import ini
+from common.inspect import inspect_element
 from utils.produce import produce
 from utils.dirty_data import dirty_data
 from time import sleep
@@ -23,6 +24,7 @@ class TestLogin(unittest.TestCase):
     """登录功能"""
     @classmethod
     def setUpClass(cls) -> None:
+        inspect_element()
         cls.driver = webdriver.Chrome()
         dirty_data()
 

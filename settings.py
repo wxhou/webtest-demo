@@ -19,7 +19,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 INI_PATH = os.path.join(BASE_DIR, 'config.ini')
 
 #页面元素的目录
-ELEMENT_PATH = lambda x: os.path.join(BASE_DIR, 'PageElements', '%s.yaml' % x)
+ELEMENT_PATH = os.path.join(BASE_DIR, 'PageElements')
 
 # 截图目录
 SCREENSHOT_PATH = os.path.join(BASE_DIR, 'screenshot')
@@ -34,4 +34,4 @@ LOG_PATH = os.path.join(BASE_DIR, 'logs')
 TEST_SUITES = os.path.join(BASE_DIR, 'TestCase')
 
 if __name__ == "__main__":
-    print(root_dir)
+    print(BASE_DIR)
