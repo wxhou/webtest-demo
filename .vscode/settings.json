@@ -13,5 +13,8 @@
     "python.testing.unittestEnabled": true,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "python.linting.pylintEnabled": true,
-    "python.formatting.provider": "yapf"
+    "python.formatting.provider": "yapf",
+    "python.testing.pytestArgs": [
+        "TestCase"
+    ]
 }

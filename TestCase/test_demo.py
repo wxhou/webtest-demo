@@ -12,7 +12,7 @@ sys.path.append('.')
 import unittest
 from selenium import webdriver
 from PageObject.loginpage import LoginPage
-from common.image import picture
+from common.image import image_contrast
 from common.readconfig import ini
 from utils.produce import produce
 from utils.dirty_data import dirty_data
@@ -45,7 +45,7 @@ class TestLogin(unittest.TestCase):
         sleep(3)
         new_picture = login.login_shot(produce.screenshot_name)
         self.driver.refresh()
-        assert picture(new_picture,
+        assert image_contrast(new_picture,
                        produce.screen_expected) == 0.0, "当前元素截图%s，与预期图片%s不匹配" % (
                            new_picture, produce.screen_expected)
 
