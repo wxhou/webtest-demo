@@ -134,6 +134,7 @@ class WebPage:
 
     def input_text(self, locator, text, number=None):
         '''输入(输入前先清空)'''
+        sleep(0.5)
         msg = element_value(locator, number)
         ele = WebPage.selector(lambda *args: self.wait.until(
             EC.element_to_be_clickable(args), message="在元素%s中，输入【%s】失败！" % (msg, text)), locator, number)
@@ -150,7 +151,7 @@ class WebPage:
         self.focus(ele)
         ele.click()
         log.info("点击元素%s" % msg)
-        self.driver.implicitly_wait(2)
+        sleep()
 
     def isPagerefresh(self, locator, number=None):
         """判断页面是否刷新"""
