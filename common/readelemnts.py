@@ -21,16 +21,13 @@ class Element:
         if not os.path.exists(self.element):
             raise FileNotFoundError("%s 文件不存在！" % self.element)
         with open(self.element, encoding='utf-8') as f:
-            self.data = yaml.safe_load(f.read())
+            self.data = yaml.safe_load(f)
 
-    def __getattr__(self, item):
-        sections = self.data.get(item)
-        if sections:
-            return sections
-        else:
-            raise ValueError("关键字 %s 获取元素结果为空" % item)
+    def __call__(self, item):
+        """获取定位元素值"""
+        return self.data[item]
 
 
 if __name__ == '__main__':
     login = Element('login')
-    print(login.登录)
+    print(login('登录'))

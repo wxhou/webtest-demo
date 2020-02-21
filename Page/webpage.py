@@ -8,7 +8,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
 from selenium import webdriver
-from common.image import element_shot, image_name
+from common.image import element_shot, get_image_name
 from utils.log import log
 import time
 
@@ -195,7 +195,7 @@ class WebPage:
 
     def upload_File(self, locator, filepath, number=None):
         """上传文件"""
-        name = image_name(filepath)[0]
+        name = get_image_name(filepath)[0]
         ele = self.findelement(locator, number)
         self.focus(ele)
         ele.send_keys(filepath)
@@ -281,7 +281,7 @@ class WebPage:
     def refresh(self):
         '''刷新页面F5'''
         self.driver.refresh()
-        log.info("刷新当前网页：%s" % self.driver.current_url())
+        log.info("刷新当前网页!")
         self.driver.implicitly_wait(30)
 
 
