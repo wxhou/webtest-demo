@@ -211,7 +211,7 @@ class WebPage:
         ele.send_keys(filepath)
         log.info("正在上传文件：%s" % filepath)
         start_time = time.time()
-        while not self.Exists(""):
+        while not assert_text_is_dom(self.driver, name):
             sleep(0.5)
             if (time.time() - start_time) > self.timeout:
                 raise TimeoutException("在元素【】上传文件【】失败" % ())
