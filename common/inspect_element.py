@@ -24,11 +24,14 @@ def inspect_element():
                     if "==" in ele:
                         pattern, value = ele.split('==')
                         if pattern not in LOCATE_MODE:
-                            raise AttributeError('【%s】路径中【%s]元素没有指定类型' % (i, k))
+                            raise AttributeError('【%s】路径中【%s]元素没有指定类型' %
+                                                 (i, k))
                         if pattern == 'xpath':
-                            assert '//' in ele, '【%s】路径中【%s]元素xpath类型与值不配' % (i, k)
+                            assert '//' in ele, '【%s】路径中【%s]元素xpath类型与值不配' % (
+                                i, k)
                         if pattern == 'css':
-                            assert '//' not in ele, '【%s】路径中【%s]元素css类型与值不配' % (i, k)
+                            assert '//' not in ele, '【%s】路径中【%s]元素css类型与值不配' % (
+                                i, k)
                     else:
                         raise AttributeError('【%s】路径中【%s]元素没有指定元素分隔符' % (i, k))
     end_time = time.time()

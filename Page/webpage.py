@@ -285,7 +285,7 @@ class WebPage:
     def refresh(self):
         '''刷新页面F5'''
         self.driver.refresh()
-        log.info("刷新当前网页：%s" % self.driver.current_url())
+        log.info("刷新当前网页!")
         self.driver.implicitly_wait(30)
 
 

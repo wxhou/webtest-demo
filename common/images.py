@@ -14,8 +14,7 @@ def element_screenshot(locator, path):
     """元素截图"""
     log.warning("需要截图的元素坐标%s" % locator.location)
     log.warning("需要截图的元素大小%s" % locator.size)
-    shot = (locator.location['x'],
-            locator.location['y'],
+    shot = (locator.location['x'], locator.location['y'],
             locator.location['x'] + locator.size['width'],
             locator.location['y'] + locator.size['height'])
     im = Image.open(path)
