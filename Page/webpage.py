@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# coding=utf-8
+# -*- coding:utf-8 -*-
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.touch_actions import TouchActions
@@ -7,17 +7,17 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
-from selenium import webdriver
-from common.image import element_shot, image_name
-from utils.log import log
+from airtest_selenium import WebChrome
+from common.airtest_method import airtest_assert_exists
+from common.images import element_screenshot, get_image_name
+from utils.logger import Logger
 import time
 
 """
 selenium基类
 本文件存放了selenium基类的深度封装方法
 """
-
-locate = "xpath==//*[contains(text(),'%s')]"
+log = Logger('page').logger
 
 LOCATE_MODE = {
     'css': By.CSS_SELECTOR,
@@ -45,7 +45,7 @@ class WebPage:
     """selenium基类"""
 
     def __init__(self, driver):
-        # self.driver = webdriver.Chrome()
+        # self.driver = WebChrome()
         self.driver = driver
         self.timeout = 10
         self.visible = 3
@@ -195,14 +195,18 @@ class WebPage:
 
     def upload_File(self, locator, filepath, number=None):
         """上传文件"""
-        name = image_name(filepath)[0]
+        name = get_image_name(filepath)[0]
         ele = self.findelement(locator, number)
         self.focus(ele)
         ele.send_keys(filepath)
         log.info("正在上传文件：%s" % filepath)
         start_time = time.time()
-        while not self.Exists(locate % name):
-            sleep(seconds=0.1)
+        while True:
+            try:
+                airtest_assert_exists(self.driver, locator % name)
+                break
+            except AssertionError:
+                sleep(0.5)
             if (time.time() - start_time) > self.timeout:
                 raise TimeoutException("在元素【】上传文件【】失败" % ())
         log.info("上传文件【%s】成功！" % filepath)
@@ -213,7 +217,7 @@ class WebPage:
         self.focus(ele)  # 元素不可见则聚焦
         self.driver.save_screenshot(path)
         self.shot_file(path)
-        element_shot(ele, path)
+        element_screenshot(ele, path)
         self.driver.implicitly_wait(1)
         log.info("截图的路径是：%s" % path)
         return path

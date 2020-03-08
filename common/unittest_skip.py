@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-'''
-@File : unittest_skip.py
-@Time : 2020-01-19 10:30:39
-@Author : wxhou 
-@Version : 1.0
-@Contact : 1084502012@qq.com
-'''
 import sys
+
 sys.path.append('.')
 import unittest
 from functools import wraps
@@ -18,6 +12,7 @@ def skip_depend(depend=""):
     :param depend: 依赖的用例函数名，默认为空
     :return: wraper_func
     """
+
     def wraper_func(test_func):
         @wraps(test_func)  # @wraps：避免被装饰函数自身的信息丢失
         def inner_func(self):
@@ -31,7 +26,7 @@ def skip_depend(depend=""):
             errors = str([error[0] for error in self._outcome.result.errors])
             skipped = str([error[0] for error in self._outcome.result.skipped])
             flag = (depend in failures) or (depend in errors) or (
-                depend in skipped)
+                    depend in skipped)
             if failures.find(depend) != -1:
                 # 输出结果 [<__main__.TestDemo testMethod=test_login>]
                 # 如果依赖的用例名在failures中，则判定为失败，以下两种情况同理

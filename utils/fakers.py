@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
 # coding=utf-8
-'''
-@File    :   data_generator.py
-@Time    :   2019/11/18 15:20:54
-@Author  :   wxhou
-@Version :   1.0
-@Contact :   wxhou@yunjinginc.com
-'''
 import sys
+
 sys.path.append('.')
 import os
 import settings
@@ -16,7 +10,7 @@ from faker import Faker
 faker = Faker('zh_CN')
 
 
-class Produce:
+class Fakers:
     @property
     def mobile_number(self):
         return faker.phone_number()  # 手机号
@@ -53,19 +47,8 @@ class Produce:
     def name(self):
         return faker.name()  # 生成名字
 
-    @property
-    def screen_expected(self):
-        """预期图片"""
-        screen_name = os.path.join(settings.BASE_DIR, 'TestData',
-                                   'expected','Expected.png')
-        return screen_name
-    @property
-    def screenshot_name(self):
-        """截图名称"""
-        return os.path.join(settings.SCREENSHOT_PATH, '%s.png' % produce.word)
 
-
-produce = Produce()
+fakers = Fakers()
 
 if __name__ == "__main__":
-    print(produce.screenshot_name)
+    print(fakers.word)

@@ -1,15 +1,8 @@
 #!/usr/bin/env python3
-# coding=utf-8
-'''
-@File    :   runcase.py
-@Time    :   2019/09/28 11:20:56
-@Author  :   wxhou
-@Version :   1.0
-@Contact :   wxhou@yunjinginc.com
-'''
+# -*- coding:utf-8 -*-
 import sys
+
 sys.path.append('.')
-import os
 import settings
 import unittest
 from common.HTMLTestRunner_cn import HTMLTestRunner

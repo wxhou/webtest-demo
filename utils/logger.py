@@ -1,13 +1,7 @@
 #!/usr/bin/env python3
-# coding=utf-8
-'''
-@File    :   log.py
-@Time    :   2019/11/18 14:09:10
-@Author  :   wxhou
-@Version :   1.0
-@Contact :   wxhou@yunjinginc.com
-'''
+# -*- coding:utf-8 -*-
 import sys
+
 sys.path.append('.')
 import os
 import settings
@@ -15,13 +9,12 @@ import logging
 from datetime import datetime
 
 
-
-class Log:
-    def __init__(self):
+class Logger:
+    def __init__(self, name):
         log_path = self.log_path[:self.log_path.rfind('/')]
         if not os.path.exists(log_path):
             os.makedirs(log_path)
-        self.logger = logging.getLogger()
+        self.logger = logging.getLogger(name)
         if not self.logger.handlers:
             self.logger.setLevel(logging.DEBUG)
 
@@ -49,10 +42,9 @@ class Log:
 
     @property
     def fmt(self):
-        return '%(levelname)s\t%(asctime)s\t[%(filename)s:%(lineno)d]\t%(message)s'
+        return '%(levelname)s\t%(asctime)s\t[%(filename)s:%(lineno)d]\t%(name)s\t%(message)s'
 
-
-log = Log().logger
 
 if __name__ == '__main__':
+    log = Logger('root').logger
     log.info('你好')

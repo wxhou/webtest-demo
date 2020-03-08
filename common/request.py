@@ -1,5 +1,5 @@
-# !/usr/bin/env python3
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding:utf-8 -*-
 import sys
 
 sys.path.append('.')
@@ -11,6 +11,7 @@ urllib3.disable_warnings()
 
 class Download:
     """下载"""
+
     def __init__(self, url, path, stream=False):
         self.url = url
         self.path = path

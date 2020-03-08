@@ -1,15 +1,16 @@
 #!/usr/bin/env python3
-# coding=utf-8
+# -*- coding:utf-8 -*-
 import re
-import math
+import os
 import time
-import operator
+import settings
 from PIL import Image
-from functools import reduce
-from utils.log import log
+from utils.logger import Logger
+
+log = Logger('image').logger
 
 
-def element_shot(locator, path):
+def element_screenshot(locator, path):
     """元素截图"""
     log.warning("需要截图的元素坐标%s" % locator.location)
     log.warning("需要截图的元素大小%s" % locator.size)
@@ -23,23 +24,16 @@ def element_shot(locator, path):
     time.sleep(1)
 
 
-def image_contrast(img1, img2):
-    """图像对比"""
-    image1 = Image.open(img1)
-    image2 = Image.open(img2)
-
-    h1 = image1.histogram()
-    h2 = image2.histogram()
-
-    result = math.sqrt(reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
-    log.info("对比结果为%s" % result)
-    return result == '0.0'
-
-
-def image_name(string):
+def get_image_name(string):
     """获取文件名称"""
     pattern = re.compile(r'([^<>/\\\|:""\*\?]+)\.\w+$')
     return pattern.findall(string)
+
+
+def get_airtest_image(name):
+    """获取airtest图像"""
+    _path = settings.AIRTEST_PATH
+    return os.path.join(_path, f"{name}.png")
 
 
 if __name__ == '__main__':
