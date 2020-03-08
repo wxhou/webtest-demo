@@ -8,7 +8,6 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
 from airtest_selenium import WebChrome
-from common.airtest_method import airtest_assert_exists
 from common.images import element_screenshot, get_image_name
 from utils.logger import Logger
 import time
@@ -17,6 +16,7 @@ import time
 selenium基类
 本文件存放了selenium基类的深度封装方法
 """
+
 log = Logger('page').logger
 
 LOCATE_MODE = {
@@ -36,9 +36,14 @@ def sleep(seconds=1.0):
     time.sleep(seconds)
 
 
-def element_value(locator, number):
-    """元素值"""
-    return locator % number if number else locator
+def assert_text_is_dom(driver, text):
+    """验证文字在DOM中"""
+    assert WebPage(driver).Exists(f"xpath==//*[contains(text(),'{text}')]"), f"文字{text}未在DOM中加载"
+
+
+def assert_text_visible(driver, text):
+    """验证文字在DOM中"""
+    assert WebPage(driver).Exists(f"xpath==//*[contains(text(),'{text}')]"), f"文字{text}不可见"
 
 
 class WebPage:
@@ -54,10 +59,15 @@ class WebPage:
         self.touch = TouchActions(self.driver)
 
     @staticmethod
+    def element_value(locator, number):
+        """元素值"""
+        return locator % number if number else locator
+
+    @staticmethod
     def selector(func, locator, number=None):
         """选择器"""
         pattern, value = locator.split('==')
-        return func(LOCATE_MODE[pattern], element_value(value, number))
+        return func(LOCATE_MODE[pattern], WebPage.element_value(value, number))
 
     def get_url(self, url, title=None):
         '''打开网址并验证'''
@@ -77,14 +87,14 @@ class WebPage:
         """寻找单个元素"""
         return WebPage.selector(
             lambda *args: self.wait.until(lambda x: x.find_element(*args),
-                                          message="查找单个元素%s失败！" % element_value(locator, number)),
+                                          message="查找单个元素%s失败！" % WebPage.element_value(locator, number)),
             locator, number)
 
     def findelements(self, locator, number=None):
         """查找多个相同的元素"""
         return WebPage.selector(
             lambda *args: self.wait.until(lambda x: x.find_elements(*args),
-                                          message="查找单个元素%s失败！" % element_value(locator, number)),
+                                          message="查找单个元素%s失败！" % WebPage.element_value(locator, number)),
             locator, number)
 
     def Exists(self, locator, number=None):  # 判断元素是否在DOM中
@@ -129,23 +139,23 @@ class WebPage:
         ele = self.findelement(locator, number)
         self.focus(ele)
         ele.clear()
-        log.info("清空输入框：%s" % element_value(locator, number))
+        log.info("清空输入框：%s" % WebPage.element_value(locator, number))
         self.driver.implicitly_wait(1)
 
     def input_text(self, locator, text, number=None):
         '''输入(输入前先清空)'''
         sleep(0.5)
-        msg = element_value(locator, number)
+        msg = WebPage.element_value(locator, number)
         ele = WebPage.selector(lambda *args: self.wait.until(
             EC.element_to_be_clickable(args), message="在元素%s中，输入【%s】失败！" % (msg, text)), locator, number)
         self.focus(ele)
         ele.clear()
         ele.send_keys(text)
-        log.info("在元素%s中输入%s" % (element_value(locator, number), text))
+        log.info("在元素%s中输入%s" % (WebPage.element_value(locator, number), text))
 
     def is_click(self, locator, number=None):
         '''点击'''
-        msg = element_value(locator, number)
+        msg = WebPage.element_value(locator, number)
         ele = WebPage.selector(lambda *args: self.wait.until(
             EC.element_to_be_clickable(args), message="点击元素%s失败！" % msg), locator, number)
         self.focus(ele)
@@ -161,18 +171,18 @@ class WebPage:
     def isElementText(self, locator, number=None):
         '''获取当前的text'''
         __text = self.findelement(locator, number).text
-        log.info("获取元素%s文字：[%s]" % (element_value(locator, number), __text))
+        log.info("获取元素%s文字：[%s]" % (WebPage.element_value(locator, number), __text))
         return __text
 
     def textInElement(self, locator, text, number=None):
         '''检查某段文本在输入框中'''
-        log.info("检查文本【%s】在输入框%s中" % (text, element_value(locator, number)))
+        log.info("检查文本【%s】在输入框%s中" % (text, WebPage.element_value(locator, number)))
         return WebPage.selector(lambda *args: EC.text_to_be_present_in_element(args, text)(
             self.driver), locator, number)
 
     def isSelected(self, locator, number=None):
         '''判断是否选中'''
-        log.info("检查元素:%s 是否被选中" % element_value(locator, number))
+        log.info("检查元素:%s 是否被选中" % WebPage.element_value(locator, number))
         return WebPage.selector(lambda *args: self.wait.until(
             EC.element_located_selection_state_to_be(args, True)), locator, number)
 
@@ -181,7 +191,7 @@ class WebPage:
         element = self.findelement(locator, number)
         self.focus(element)
         self.action.pause(0.5).click(element).pause(0.5).perform()
-        log.info("使用鼠标点击：%s" % element_value(locator, number))
+        log.info("使用鼠标点击：%s" % WebPage.element_value(locator, number))
         self.driver.implicitly_wait(1)
 
     def action_sendkeys(self, locator, text, number=None):
@@ -201,12 +211,8 @@ class WebPage:
         ele.send_keys(filepath)
         log.info("正在上传文件：%s" % filepath)
         start_time = time.time()
-        while True:
-            try:
-                airtest_assert_exists(self.driver, locator % name)
-                break
-            except AssertionError:
-                sleep(0.5)
+        while not self.Exists(""):
+            sleep(0.5)
             if (time.time() - start_time) > self.timeout:
                 raise TimeoutException("在元素【】上传文件【】失败" % ())
         log.info("上传文件【%s】成功！" % filepath)
@@ -266,21 +272,10 @@ class WebPage:
         else:
             log.error("切换标签失败!请检查！")
 
-    @property
-    def getSource(self):
-        """获取页面源代码"""
-        log.info("获取页面的源码！")
-        return self.driver.page_source
-
     def shot_file(self, path):
         '''文件截图'''
         log.info("正在进行PNG截图！生成文件为：%s" % path)
         return self.driver.save_screenshot(path)
-
-    def close(self):
-        '''关闭当前标签'''
-        log.info("关闭浏览器标签")
-        self.driver.close()
 
     def refresh(self):
         '''刷新页面F5'''
