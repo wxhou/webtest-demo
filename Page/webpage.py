@@ -43,7 +43,7 @@ def assert_text_is_dom(driver, text):
 
 def assert_text_visible(driver, text):
     """验证文字在DOM中"""
-    assert WebPage(driver).Exists(f"xpath==//*[contains(text(),'{text}')]"), f"文字{text}不可见"
+    assert WebPage(driver).isElementVisible(f"xpath==//*[contains(text(),'{text}')]"), f"文字{text}不可见"
 
 
 class WebPage:
