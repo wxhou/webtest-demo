@@ -9,7 +9,7 @@ from airtest_selenium import WebChrome
 from PageObject.loginpage import LoginPage
 from common.readconfig import ini
 from common.inspect_element import inspect_element
-from common.airtest_method import airtest_assert_template, airtest_touch_image
+from common.airtest_method import AirTestMethod
 
 
 class TestLogin(unittest.TestCase):
@@ -19,6 +19,7 @@ class TestLogin(unittest.TestCase):
     def setUpClass(cls) -> None:
         inspect_element()
         cls.driver = WebChrome()
+        cls.airtest = AirTestMethod(cls.driver)
 
     @classmethod
     def tearDownClass(cls) -> None:
@@ -37,9 +38,9 @@ class TestLogin(unittest.TestCase):
         login = LoginPage(self.driver)
         login.login('admin', '123456')
         sleep(3)
-        airtest_touch_image(self.driver, 'CMS管理')
+        self.airtest.touch_image('CMS管理')
         sleep(3)
-        airtest_assert_template(self.driver, '头像', "成功加载登录头像")
+        self.airtest.assert_template('头像', "成功加载登录头像")
 
 
 if __name__ == '__main__':
