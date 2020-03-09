@@ -11,12 +11,12 @@ class LoginPage(WebPage):
     def login(self, user, pwd):
         self.input_text(login('账号'), text=user)
         self.input_text(login('密码'), text=pwd)
-        self.is_click(login('登录'))
+        self.click_element(login('登录'))
         sleep()
 
     def quit_login(self):
-        self.is_click(login('用户头像'))
-        self.is_click(login('注销'))
+        self.click_element(login('用户头像'))
+        self.click_element(login('注销'))
 
 
 if __name__ == "__main__":
