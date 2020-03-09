@@ -9,20 +9,22 @@ class AirTestMethod:
 
     def __init__(self, driver):
         self.driver = driver
-        self.size = self.driver.get_window_size()
-        self.width = self.size['width']
-        self.height = self.size['height']
+        self._size = self.driver.get_window_size()
 
-    def __image(self, name):
+    @property
+    def size(self):
+        return self._size['width'], self._size['height']
+
+    def _image(self, name):
         """被识别的图片Template对象"""
-        return Template(name, record_pos=(self.width / 2, self.height / 2), resolution=(self.width, self.height))
+        return Template(name, record_pos=(self._width / 2, self._height / 2), resolution=self.size)
 
     def touch_image(self, name):
         """点击网页中的图片
         @param driver: 浏览器实例
         @param name: 图片名称
         """
-        v = self.__image(get_airtest_image(name))
+        v = self._image(get_airtest_image(name))
         self.driver.airtest_touch(v)
 
     def assert_template(self, name, msg=None):
@@ -31,9 +33,9 @@ class AirTestMethod:
         @param name: 图片的名称
         @param msg:
         """
-        v = self.__image(get_airtest_image(name))
+        v = self._image(get_airtest_image(name))
         self.driver.assert_template(v, msg)
 
 
 if __name__ == '__main__':
-    pass
+    air = AirTestMethod()
