@@ -15,9 +15,13 @@ class AirTestMethod:
     def size(self):
         return self._size['width'], self._size['height']
 
+    @property
+    def size_half(self):
+        return self._size['width'] / 2, self._size['height'] / 2
+
     def _image(self, name):
         """被识别的图片Template对象"""
-        return Template(name, record_pos=(self._width / 2, self._height / 2), resolution=self.size)
+        return Template(name, record_pos=self.size_half, resolution=self.size)
 
     def touch_image(self, name):
         """点击网页中的图片
@@ -38,4 +42,4 @@ class AirTestMethod:
 
 
 if __name__ == '__main__':
-    air = AirTestMethod()
+    pass
