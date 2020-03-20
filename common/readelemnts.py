@@ -18,10 +18,10 @@ class Element:
         with open(self.path, encoding='utf-8') as f:
             self.data = yaml.safe_load(f.read())
 
-    def __call__(self, item):
+    def __getitem__(self, item):
         return self.data[item]
 
 
 if __name__ == '__main__':
     login = Element('login')
-    print(login('登录'))
+    print(login['登录'])

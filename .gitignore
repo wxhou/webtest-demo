@@ -129,3 +129,4 @@ dmypy.json
 .pyre/
 demo.py
 report.html
+*.jpg

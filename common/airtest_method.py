@@ -25,7 +25,6 @@ class AirTestMethod:
 
     def touch_image(self, name):
         """点击网页中的图片
-        @param driver: 浏览器实例
         @param name: 图片名称
         """
         v = self._image(get_airtest_image(name))
@@ -33,7 +32,6 @@ class AirTestMethod:
 
     def assert_template(self, name, msg=None):
         """验证网页中图片存在
-        @param driver: 浏览器实例
         @param name: 图片的名称
         @param msg:
         """

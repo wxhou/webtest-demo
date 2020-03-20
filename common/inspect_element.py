@@ -12,8 +12,8 @@ from Page.webpage import LOCATE_MODE
 
 def inspect_element():
     """审查所有的元素是否正确"""
-    path = settings.ELEMENT_PATH
     start_time = time.time()
+    path = settings.ELEMENT_PATH
     for i in os.listdir(path):
         _dir = os.path.join(path, i)
         if os.path.isfile(_dir):
