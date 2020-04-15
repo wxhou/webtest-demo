@@ -3,8 +3,10 @@
 import sys
 
 sys.path.append('.')
+import conf
 import unittest
-from time import sleep
+from utils.times import sleep
+from utils.clear_data import clear_old_data
 from airtest_selenium import WebChrome
 from PageObject.loginpage import LoginPage
 from common.readconfig import ini
@@ -24,6 +26,7 @@ class TestLogin(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         cls.driver.quit()
+        clear_old_data(conf.TEST_SUITES)
 
     def setUp(self) -> None:
         self.imgs = []

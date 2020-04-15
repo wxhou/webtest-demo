@@ -3,15 +3,17 @@
 import sys
 
 sys.path.append('.')
-import settings
+import conf
 import unittest
-from common.HTMLTestRunner_cn import HTMLTestRunner
+from utils.times import now_time
+from utils.clear_data import clear_old_data
+from utils.HTMLTestRunner_cn import HTMLTestRunner
 
-discover = unittest.defaultTestLoader.discover(settings.TEST_SUITES, pattern="test*.py")
+discover = unittest.defaultTestLoader.discover(conf.TEST_SUITES, pattern="test*.py")
 
 if __name__ == "__main__":
     try:
-        with open('report.html', 'wb+') as fp:
+        with open('report/{}.html'.format(now_time()), 'wb+') as fp:
             runner = HTMLTestRunner(stream=fp,
                                     title="测试结果",
                                     description="用例执行情况",
@@ -21,3 +23,5 @@ if __name__ == "__main__":
             runner.run(discover)
     except Exception as e:
         print("用例执行失败:{}".format(e))
+    finally:
+        clear_old_data(conf.BASE_DIR)

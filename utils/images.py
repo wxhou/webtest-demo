@@ -2,12 +2,10 @@
 # -*- coding:utf-8 -*-
 import re
 import os
-import time
-import settings
+import conf
 from PIL import Image
-from utils.logger import Logger
-
-log = Logger('image').logger
+from utils.times import sleep
+from utils.logger import log
 
 
 def element_screenshot(locator, path):
@@ -20,7 +18,7 @@ def element_screenshot(locator, path):
     im = Image.open(path)
     im = im.crop(shot)
     im.save(path)
-    time.sleep(1)
+    sleep()
 
 
 def get_image_name(string):
@@ -31,8 +29,8 @@ def get_image_name(string):
 
 def get_airtest_image(name):
     """获取airtest图像"""
-    _path = settings.AIRTEST_PATH
-    return os.path.join(_path, f"{name}.png")
+    _path = conf.AIRTEST_PATH
+    return os.path.join(_path, "{}.png".format(name))
 
 
 if __name__ == '__main__':

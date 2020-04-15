@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-from Page.webpage import WebPage, sleep
+from utils.times import sleep
+from Page.webpage import WebPage
 from common.readelemnts import Element
 
 login = Element('login')

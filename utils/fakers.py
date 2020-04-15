@@ -3,8 +3,6 @@
 import sys
 
 sys.path.append('.')
-import os
-import settings
 from faker import Faker
 
 faker = Faker('zh_CN')

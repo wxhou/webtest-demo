@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('.')
 import configparser
-import settings
+import conf
 
 SERVER = 'server'
 URL = 'url'
@@ -12,7 +12,7 @@ URL = 'url'
 
 class ReadConfig:
     def __init__(self):
-        self.path = settings.INI_PATH
+        self.path = conf.INI_PATH
         self.config = configparser.RawConfigParser()
         self.config.read(self.path)
 
@@ -29,10 +29,6 @@ class ReadConfig:
     @property
     def url(self):
         return self._get(SERVER, URL)
-
-    @url.setter
-    def url(self, value):
-        self._set(SERVER, URL, value)
 
 
 ini = ReadConfig()

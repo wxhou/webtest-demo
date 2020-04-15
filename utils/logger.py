@@ -4,17 +4,17 @@ import sys
 
 sys.path.append('.')
 import os
-import settings
+import conf
 import logging
-from datetime import datetime
+from utils.times import datetime_strftime
 
 
 class Logger:
-    def __init__(self, name):
+    def __init__(self):
         log_path = self.log_path[:self.log_path.rfind('/')]
         if not os.path.exists(log_path):
             os.makedirs(log_path)
-        self.logger = logging.getLogger(name)
+        self.logger = logging.getLogger()
         if not self.logger.handlers:
             self.logger.setLevel(logging.DEBUG)
 
@@ -37,14 +37,14 @@ class Logger:
 
     @property
     def log_path(self):
-        timeline = datetime.now().strftime("%Y%m")
-        return os.path.join(settings.LOG_PATH, '{}.log'.format(timeline))
+        return os.path.join(conf.LOG_PATH, '{}.log'.format(datetime_strftime()))
 
     @property
     def fmt(self):
-        return '%(levelname)s\t%(asctime)s\t[%(filename)s:%(lineno)d]\t%(name)s\t%(message)s'
+        return '%(levelname)s\t%(asctime)s\t[%(filename)s:%(lineno)d]\t%(message)s'
 
+
+log = Logger().logger
 
 if __name__ == '__main__':
-    log = Logger('root').logger
     log.info('你好')

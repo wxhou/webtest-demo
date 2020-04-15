@@ -7,44 +7,18 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import *
-from airtest_selenium import WebChrome
-from common.images import element_screenshot, get_image_name
-from utils.logger import Logger
+from utils.images import element_screenshot, get_image_name
+from common.readelemnts import Element
+from utils.logger import log
+from utils.times import sleep
 import time
+import conf
 
 """
 selenium基类
 本文件存放了selenium基类的深度封装方法
 """
-
-log = Logger('page').logger
-
-# 元素定位的类型
-LOCATE_MODE = {
-    'css': By.CSS_SELECTOR,
-    'xpath': By.XPATH,
-    'name': By.NAME,
-    'id': By.ID,
-    'class': By.CLASS_NAME
-}
-
-
-def sleep(seconds=1.0):
-    """
-    等待时间
-    有些步骤不强制等待，只用显式等待会导致执行报错
-    """
-    time.sleep(seconds)
-
-
-def assert_text_is_dom(driver, text):
-    """验证文字在DOM中"""
-    assert WebPage(driver).element_exists(f"xpath==//*[contains(text(),'{text}')]"), f"文字{text}未在DOM中加载"
-
-
-def assert_text_visible(driver, text):
-    """验证文字在DOM中"""
-    assert WebPage(driver).element_visible(f"xpath==//*[contains(text(),'{text}')]"), f"文字{text}不可见"
+base = Element('base')
 
 
 class WebPage:
@@ -68,7 +42,7 @@ class WebPage:
     def selector(func, locator, number=None):
         """选择器"""
         pattern, value = locator.split('==')
-        return func(LOCATE_MODE[pattern], WebPage.element_value(value, number))
+        return func(conf.LOCATE_MODE[pattern], WebPage.element_value(value, number))
 
     def get_url(self, url, title=None):
         """打开网址并验证"""
@@ -103,13 +77,13 @@ class WebPage:
     def element_num(self, locator):  # 获取相同元素的个数
         """获取相同元素的个数"""
         number = len(self.find_web_elements(locator))
-        log.info("元素%s的个数是：%s" % (locator, number))
+        log.info("元素%s数量是：%s" % (locator, number))
         return number
 
     def element_text(self, locator, number=None):
         """获取当前的text"""
         text = self.find_web_element(locator, number).text
-        log.info("获取元素%s文字：[%s]" % (WebPage.element_value(locator, number), text))
+        log.info("元素%s文字是：[%s]" % (WebPage.element_value(locator, number), text))
         return text
 
     """判断函数"""
@@ -226,7 +200,7 @@ class WebPage:
         ele.send_keys(path)
         log.info("正在上传文件：%s" % path)
         start_time = time.time()
-        while not assert_text_is_dom(self.driver, name):
+        while not self.element_exists(base['模糊匹配文字'] % name):
             sleep(0.5)
             if (time.time() - start_time) > self.timeout:
                 raise TimeoutException("在元素【】上传文件【】失败" % ())
@@ -263,15 +237,7 @@ class WebPage:
         all_handle = self.driver.window_handles
         self.driver.switch_to.window(all_handle[-1])
         now_handle2 = self.driver.current_window_handle
-        for i in range(3, 0, -1):
-            try:
-                assert now_handle1 != now_handle2
-                log.info('切换新标签成功！%s' % self.driver.title)
-                break
-            except AssertionError:
-                log.exception("切换标签失败！正在重试，还有%d机会！" % i)
-        else:
-            log.error("切换标签失败!请检查！")
+        assert now_handle1 != now_handle2, "切换标签失败!"
 
     def refresh(self):
         """刷新页面F5"""

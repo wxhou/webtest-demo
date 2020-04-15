@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-from common.images import get_airtest_image
+from utils.images import get_airtest_image
 from airtest.core.cv import Template
 
 
