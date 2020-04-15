@@ -181,7 +181,7 @@ class WebPage:
         self.action.pause(0.5).click(element).pause(0.5).send_keys(text)
         self.action.perform()
         log.info("使用鼠标方法输入：%s" % text)
-        self.action.actions.pop()  # 防止重复输入
+        self.action._actions.pop()  # 防止重复输入
 
     def inline_scroll_bar(self, element, func='Left', number='10000'):
         """
