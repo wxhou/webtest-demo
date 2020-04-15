@@ -22,6 +22,9 @@ AIRTEST_PATH = os.path.join(BASE_DIR, 'airtest_image')
 # 日志目录
 LOG_PATH = os.path.join(BASE_DIR, 'logs')
 
+# 报告目录
+REPORT_PATH = os.path.join(BASE_DIR, 'report')
+
 # 测试集
 TEST_SUITES = os.path.join(BASE_DIR, 'TestCase')
 

@@ -3,6 +3,7 @@
 import sys
 
 sys.path.append('.')
+import os
 import conf
 import unittest
 from utils.times import now_time
@@ -11,9 +12,17 @@ from utils.HTMLTestRunner_cn import HTMLTestRunner
 
 discover = unittest.defaultTestLoader.discover(conf.TEST_SUITES, pattern="test*.py")
 
+
+def report_path():
+    """报告文件"""
+    if not os.path.exists(conf.REPORT_PATH):
+        os.makedirs(conf.REPORT_PATH)
+    return os.path.join(conf.REPORT_PATH, '{}.html'.format(now_time()))
+
+
 if __name__ == "__main__":
     try:
-        with open('report/{}.html'.format(now_time()), 'wb+') as fp:
+        with open(report_path(), 'wb+') as fp:
             runner = HTMLTestRunner(stream=fp,
                                     title="测试结果",
                                     description="用例执行情况",
