@@ -10,8 +10,7 @@ from selenium.common.exceptions import *
 from utils.images import element_screenshot, get_image_name
 from common.readelemnts import Element
 from utils.logger import log
-from utils.times import sleep
-import time
+from utils.times import *
 import conf
 
 """
@@ -69,7 +68,7 @@ class WebPage:
         """查找多个相同的元素"""
         return WebPage.selector(
             lambda *args: self.wait.until(lambda x: x.find_elements(*args),
-                                          message="查找单个元素%s失败！" % WebPage.element_value(locator, number)),
+                                          message="查找多个元素%s失败！" % WebPage.element_value(locator, number)),
             locator, number)
 
     """获取函数"""
@@ -199,10 +198,10 @@ class WebPage:
         self.focus(ele)
         ele.send_keys(path)
         log.info("正在上传文件：%s" % path)
-        start_time = time.time()
+        start_time = timestamp()
         while not self.element_exists(base['模糊匹配文字'] % name):
             sleep(0.5)
-            if (time.time() - start_time) > self.timeout:
+            if (timestamp() - start_time) > self.timeout:
                 raise TimeoutException("在元素【】上传文件【】失败" % ())
         log.info("上传文件【%s】成功！" % path)
 
