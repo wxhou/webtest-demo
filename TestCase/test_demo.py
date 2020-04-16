@@ -9,7 +9,6 @@ from utils.times import sleep
 from utils.clear_data import clear_old_data
 from airtest_selenium import WebChrome
 from PageObject.loginpage import LoginPage
-from common.readconfig import ini
 from common.inspect_element import inspect_element
 from common.airtest_method import AirTestMethod
 
@@ -31,7 +30,7 @@ class TestLogin(unittest.TestCase):
     def setUp(self) -> None:
         self.imgs = []
         login = LoginPage(self.driver)
-        login.get_url(ini.url)
+        login.get_url(conf.HOST)
 
     def tearDown(self):
         login = LoginPage(self.driver)
