@@ -57,14 +57,14 @@ class WebPage:
             title2 = self.driver.title
             assert EC.title_is(title)(self.driver), "网页title不正确，应为%s，实为%s" % (title, title2)
 
-    def find_web_element(self, locator, number=None):
+    def find_one_element(self, locator, number=None):
         """寻找单个元素"""
         return WebPage.selector(
             lambda *args: self.wait.until(lambda x: x.find_element(*args),
                                           message="查找单个元素%s失败！" % WebPage.element_value(locator, number)),
             locator, number)
 
-    def find_web_elements(self, locator, number=None):
+    def find_all_element(self, locator, number=None):
         """查找多个相同的元素"""
         return WebPage.selector(
             lambda *args: self.wait.until(lambda x: x.find_elements(*args),
@@ -75,13 +75,13 @@ class WebPage:
 
     def element_num(self, locator):  # 获取相同元素的个数
         """获取相同元素的个数"""
-        number = len(self.find_web_elements(locator))
+        number = len(self.find_all_element(locator))
         log.info("元素%s数量是：%s" % (locator, number))
         return number
 
     def element_text(self, locator, number=None):
         """获取当前的text"""
-        text = self.find_web_element(locator, number).text
+        text = self.find_one_element(locator, number).text
         log.info("元素%s文字是：[%s]" % (WebPage.element_value(locator, number), text))
         return text
 
@@ -107,7 +107,7 @@ class WebPage:
 
     def page_refresh(self, locator, number=None):
         """判断页面是否刷新"""
-        ele = self.find_web_element(locator, number)
+        ele = self.find_one_element(locator, number)
         return EC.staleness_of(ele)
 
     def text_in_element(self, locator, text, number=None):
@@ -138,7 +138,7 @@ class WebPage:
 
     def clear_input_box(self, locator, number=None):
         """清空输入框"""
-        ele = self.find_web_element(locator, number)
+        ele = self.find_one_element(locator, number)
         self.focus(ele)
         ele.clear()
         log.info("清空输入框：%s" % WebPage.element_value(locator, number))
@@ -167,7 +167,7 @@ class WebPage:
 
     def action_click(self, locator, number=None):
         """使用鼠标点击"""
-        element = self.find_web_element(locator, number)
+        element = self.find_one_element(locator, number)
         self.focus(element)
         self.action.pause(0.5).click(element).pause(0.5).perform()
         log.info("使用鼠标点击：%s" % WebPage.element_value(locator, number))
@@ -175,7 +175,7 @@ class WebPage:
 
     def action_input(self, locator, text, number=None):
         """action的输入方法"""
-        element = self.find_web_element(locator, number)
+        element = self.find_one_element(locator, number)
         self.focus(element)
         self.action.pause(0.5).click(element).pause(0.5).send_keys(text)
         self.action.perform()
@@ -194,7 +194,7 @@ class WebPage:
     def upload_file(self, locator, path, number=None):
         """上传文件"""
         name = get_image_name(path)[0]
-        ele = self.find_web_element(locator, number)
+        ele = self.find_one_element(locator, number)
         self.focus(ele)
         ele.send_keys(path)
         log.info("正在上传文件：%s" % path)
@@ -207,7 +207,7 @@ class WebPage:
 
     def element_screenshots(self, locator, path, number=None):
         """对某个元素进行截图,并返回截图路径"""
-        ele = self.find_web_element(locator, number)
+        ele = self.find_one_element(locator, number)
         self.focus(ele)  # 元素不可见则聚焦
         self.driver.save_screenshot(path)
         element_screenshot(ele, path)
@@ -217,7 +217,7 @@ class WebPage:
 
     def select_drop_down(self, locator, number=None):
         """选择下拉框"""
-        ele = self.find_web_element(locator, number)
+        ele = self.find_one_element(locator, number)
         self.focus(ele)
         sleep(2)
         # 这里一定要加等待时间，否则会引起如下报错

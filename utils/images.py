@@ -46,6 +46,7 @@ def image_contrast_result(img1path, img2path, threshold=0.7):
 
     result = math.sqrt(reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
     # result完全相等是0.0，设置阈值为0.7
+    print("图像对比结果是：{}".format(result))
     return result < threshold
 
 

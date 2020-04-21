@@ -10,7 +10,7 @@ from Page.webpage import WebPage, base
 """
 
 
-def assert_text_is_dom(driver, text):
+def assert_text_isDOM(driver, text):
     """验证文字在DOM中"""
     assert WebPage(driver).element_exists(base['模糊匹配文字'] % text), f"文字{text}未在DOM中加载"
 
