@@ -7,9 +7,6 @@ import os
 import platform
 from selenium.webdriver.common.by import By
 
-# 项目地址
-HOST = "https://demo.fastadmin.net/admin/index/login"
-
 # 项目的根目录
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

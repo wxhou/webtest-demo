@@ -11,7 +11,7 @@ from airtest_selenium import WebChrome
 from PageObject.loginpage import LoginPage
 from common.inspect_element import inspect_element
 from common.airtest_method import AirTestMethod
-
+from common.readconfig import ini
 
 class TestLogin(unittest.TestCase):
     """登录功能"""
@@ -30,7 +30,7 @@ class TestLogin(unittest.TestCase):
     def setUp(self) -> None:
         self.imgs = []
         login = LoginPage(self.driver)
-        login.get_url(conf.HOST)
+        login.get_url(ini.url)
 
     def tearDown(self):
         login = LoginPage(self.driver)

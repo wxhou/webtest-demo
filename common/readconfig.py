@@ -6,8 +6,7 @@ sys.path.append('.')
 import configparser
 import conf
 
-SERVER = 'server'
-URL = 'url'
+HOST = 'HOST'
 
 
 class ReadConfig:
@@ -28,7 +27,7 @@ class ReadConfig:
 
     @property
     def url(self):
-        return self._get(SERVER, URL)
+        return self._get(HOST, HOST)
 
 
 ini = ReadConfig()

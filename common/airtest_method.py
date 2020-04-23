@@ -7,6 +7,7 @@ from airtest.core.cv import Template
 class AirTestMethod:
     """airtest-selenium方法"""
 
+    # 此类在Windows平台下无法使用，只能在MacOS平台下使用
     def __init__(self, driver):
         self.driver = driver
         self._size = self.driver.get_window_size()
