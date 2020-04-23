@@ -16,7 +16,7 @@ def inspect_element():
     for i in os.listdir(path):
         _dir = os.path.join(path, i)
         if os.path.isfile(_dir):
-            with open(_dir) as f:
+            with open(_dir, encoding='utf-8') as f:
                 data = yaml.safe_load(f)
             for k in data:
                 ele = data[k]
