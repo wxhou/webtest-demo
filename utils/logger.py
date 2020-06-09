@@ -4,8 +4,8 @@ import sys
 
 sys.path.append('.')
 import os
-import conf
 import logging
+from config import conf
 from utils.times import datetime_strftime
 
 

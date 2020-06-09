@@ -3,9 +3,9 @@
 import math
 import re
 import os
-import conf
 import operator
 from PIL import Image
+from config import conf
 from utils.times import sleep
 from utils.logger import log
 from functools import reduce
@@ -32,8 +32,8 @@ def get_image_name(string):
 
 def get_airtest_image(name):
     """获取airtest图像"""
-    _path = conf.AIRTEST_PATH
-    return os.path.join(_path, "{}.png".format(name))
+    path = conf.AIRTEST_PATH
+    return os.path.join(path, "{}.png".format(name))
 
 
 def image_contrast_result(img1path, img2path, threshold=0.7):
@@ -51,5 +51,5 @@ def image_contrast_result(img1path, img2path, threshold=0.7):
 
 
 if __name__ == '__main__':
-    print(image_contrast_result('/Users/hoou/PycharmProjects/webtest-demo/airtest_image/CMS管理.png',
-                                '/Users/hoou/PycharmProjects/webtest-demo/airtest_image/头像.png', ))
+    print(image_contrast_result('/Users/hoou/PycharmProjects/webtest-demo/airtest_img/CMS管理.png',
+                                '/Users/hoou/PycharmProjects/webtest-demo/airtest_img/头像.png', ))

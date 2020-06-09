@@ -4,8 +4,8 @@ import sys
 
 sys.path.append('.')
 import os
-import conf
 import unittest
+from config import conf
 from utils.sendmail import send_report_mail
 from utils.times import datetime_strftime
 from utils.clear_data import clear_old_data

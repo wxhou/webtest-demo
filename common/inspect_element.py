@@ -6,7 +6,7 @@ sys.path.append('.')
 import os
 import yaml
 import time
-import conf
+from config import conf
 
 
 def inspect_element():

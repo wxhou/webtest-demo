@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('.')
 import configparser
-import conf
+from config import conf
 
 HOST = 'HOST'
 

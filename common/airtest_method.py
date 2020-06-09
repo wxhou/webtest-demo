@@ -20,7 +20,7 @@ class AirTestMethod:
     def size_half(self):
         return self._size['width'] / 2, self._size['height'] / 2
 
-    def _image(self, name):
+    def template(self, name):
         """被识别的图片Template对象"""
         return Template(name, record_pos=self.size_half, resolution=self.size)
 
@@ -28,7 +28,7 @@ class AirTestMethod:
         """点击网页中的图片
         @param name: 图片名称
         """
-        v = self._image(get_airtest_image(name))
+        v = self.template(get_airtest_image(name))
         self.driver.airtest_touch(v)
 
     def assert_template(self, name, msg=None):
@@ -36,7 +36,7 @@ class AirTestMethod:
         @param name: 图片的名称
         @param msg:
         """
-        v = self._image(get_airtest_image(name))
+        v = self.template(get_airtest_image(name))
         self.driver.assert_template(v, msg)
 
 

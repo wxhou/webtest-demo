@@ -4,8 +4,8 @@ import sys
 
 sys.path.append('.')
 import os
-import conf
 import smtplib
+from config import conf
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr

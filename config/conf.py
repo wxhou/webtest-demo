@@ -8,16 +8,16 @@ import platform
 from selenium.webdriver.common.by import By
 
 # 项目的根目录
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 配置文件目录
-INI_PATH = os.path.join(BASE_DIR, 'config.ini')
+INI_PATH = os.path.join(BASE_DIR, 'config', 'config.ini')
 
 # 页面元素的目录
 ELEMENT_PATH = os.path.join(BASE_DIR, 'PageElements')
 
 # airtest目录
-AIRTEST_PATH = os.path.join(BASE_DIR, 'airtest_image')
+AIRTEST_PATH = os.path.join(BASE_DIR, 'airtest_img')
 
 # 日志目录
 LOG_PATH = os.path.join(BASE_DIR, 'logs')

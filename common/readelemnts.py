@@ -5,7 +5,7 @@ import sys
 sys.path.append('.')
 import os
 import yaml
-import conf
+from config import conf
 
 
 class Element:

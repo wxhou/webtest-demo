@@ -4,8 +4,7 @@ import sys
 
 sys.path.append('.')
 import os
-import conf
-from utils.times import *
+from config import conf
 
 
 def clear_old_data(filepath):
