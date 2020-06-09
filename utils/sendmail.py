@@ -31,7 +31,7 @@ def send_report_mail():
     """发送最新的测试报告"""
     # email地址和口令：
     user = '1084502012@qq.com'
-    pwd = 'cmzwajsrkujagbha'
+    pwd = ''
     # 收件人地址
     to_addr = ['1084502012@qq.com', 'wxhou@yunjinginc.com']
     # SMTP服务器地址
