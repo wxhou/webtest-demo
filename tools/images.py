@@ -5,14 +5,14 @@ import re
 import os
 import operator
 from PIL import Image
-from config import conf
-from utils.times import sleep
-from utils.logger import log
+from tools.times import sleep
+from tools.logger import log
 from functools import reduce
+from config.conf import AIRTEST_PATH
 
 
-def element_screenshot(locator, path):
-    """元素截图"""
+def area_screenshot(locator, path):
+    """区域截图"""
     log.warning("需要截图的元素坐标%s" % locator.location)
     log.warning("需要截图的元素大小%s" % locator.size)
     shot = (locator.location['x'], locator.location['y'],
@@ -32,8 +32,7 @@ def get_image_name(string):
 
 def get_airtest_image(name):
     """获取airtest图像"""
-    path = conf.AIRTEST_PATH
-    return os.path.join(path, "{}.png".format(name))
+    return os.path.join(AIRTEST_PATH, "{}.png".format(name))
 
 
 def image_contrast_result(img1path, img2path, threshold=0.7):

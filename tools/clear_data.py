@@ -4,7 +4,6 @@ import sys
 
 sys.path.append('.')
 import os
-from config import conf
 
 
 def clear_old_data(filepath):
@@ -29,4 +28,4 @@ def clear_old_data(filepath):
 
 if __name__ == '__main__':
     # clear_old_data(conf.TEST_SUITES)
-    clear_old_data(conf.BASE_DIR)
+    pass

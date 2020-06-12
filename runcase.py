@@ -6,10 +6,10 @@ sys.path.append('.')
 import os
 import unittest
 from config import conf
-from utils.sendmail import send_report_mail
-from utils.times import datetime_strftime
-from utils.clear_data import clear_old_data
-from utils.HTMLTestRunner_cn import HTMLTestRunner
+from tools.sendmail import send_report_mail
+from tools.times import datetime_strftime
+from tools.clear_data import clear_old_data
+from tools.HTMLTestRunner_cn import HTMLTestRunner
 
 discover = unittest.defaultTestLoader.discover(conf.TEST_SUITES, pattern="test*.py")
 

@@ -6,15 +6,14 @@ sys.path.append('.')
 import os
 import yaml
 import time
-from config import conf
+from config.conf import LOCATE_MODE, ELEMENT_PATH
 
 
 def inspect_element():
     """审查所有的元素是否正确"""
     start_time = time.time()
-    path = conf.ELEMENT_PATH
-    for i in os.listdir(path):
-        _dir = os.path.join(path, i)
+    for i in os.listdir(ELEMENT_PATH):
+        _dir = os.path.join(ELEMENT_PATH, i)
         if os.path.isfile(_dir):
             with open(_dir, encoding='utf-8') as f:
                 data = yaml.safe_load(f)
@@ -22,7 +21,7 @@ def inspect_element():
                 ele = data[k]
                 if "==" in ele:
                     pattern, value = ele.split('==')
-                    if pattern not in conf.LOCATE_MODE:
+                    if pattern not in LOCATE_MODE:
                         raise AttributeError('【%s】路径中【%s]元素没有指定类型' %
                                              (i, k))
                     if pattern == 'xpath':

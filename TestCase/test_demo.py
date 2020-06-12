@@ -4,14 +4,26 @@ import sys
 
 sys.path.append('.')
 import unittest
-from config import conf
-from utils.times import sleep
-from utils.clear_data import clear_old_data
 from airtest_selenium import WebChrome
-from PageObject.loginpage import LoginPage
+from page_object.loginpage import LoginPage
+from tools.clear_data import clear_old_data
 from common.inspect_element import inspect_element
 from common.airtest_method import AirTestMethod
 from common.readconfig import ini
+from config.conf import TEST_SUITES
+
+driver = None
+
+
+def setUpModule():
+    global driver
+    if driver is None:
+        inspect_element()
+        driver = WebChrome()
+
+
+def tearDownModule():
+    driver.quit()
 
 
 class TestLogin(unittest.TestCase):
@@ -19,30 +31,23 @@ class TestLogin(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        inspect_element()
-        cls.driver = WebChrome()
-        cls.airtest = AirTestMethod(cls.driver)
+        cls.airtest = AirTestMethod(driver)
+        cls.login = LoginPage(driver)
 
     @classmethod
     def tearDownClass(cls) -> None:
-        cls.driver.quit()
-        clear_old_data(conf.TEST_SUITES)
+        clear_old_data(TEST_SUITES)
 
     def setUp(self) -> None:
         self.imgs = []
-        login = LoginPage(self.driver)
-        login.get_url(ini.url)
+        self.login.get_url(ini.url)
 
     def tearDown(self):
-        login = LoginPage(self.driver)
-        login.quit_login()
+        self.login.quit_login()
 
     def test_001(self):
-        login = LoginPage(self.driver)
-        login.login('admin', '123456')
-        sleep(3)
+        self.login.login('admin', '123456')
         self.airtest.touch_image('CMS管理')
-        sleep(3)
         self.airtest.assert_template('头像', "成功加载登录头像")
 
 

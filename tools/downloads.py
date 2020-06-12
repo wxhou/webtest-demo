@@ -4,9 +4,8 @@ import sys
 
 sys.path.append('.')
 import requests
-import urllib3
 
-urllib3.disable_warnings()
+requests.urllib3.disable_warnings()
 
 
 class Download:
