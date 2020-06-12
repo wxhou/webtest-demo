@@ -9,6 +9,7 @@ from tools.times import sleep
 from tools.logger import log
 from functools import reduce
 from config.conf import AIRTEST_PATH
+from airtest_selenium.exceptions import IsNotTemplateError
 
 
 def area_screenshot(locator, path):
@@ -32,7 +33,10 @@ def get_image_name(string):
 
 def get_airtest_image(name):
     """获取airtest图像"""
-    return os.path.join(AIRTEST_PATH, "{}.png".format(name))
+    path = os.path.join(AIRTEST_PATH, "{}.png".format(name))
+    if os.path.exists(path):
+        return path
+    raise IsNotTemplateError("验证图片不存在：{}".format(path))
 
 
 def image_contrast_result(img1path, img2path, threshold=0.7):
@@ -43,12 +47,17 @@ def image_contrast_result(img1path, img2path, threshold=0.7):
     h1 = image1.histogram()
     h2 = image2.histogram()
 
-    result = math.sqrt(reduce(operator.add, list(map(lambda a, b: (a - b) ** 2, h1, h2))) / len(h1))
+    result = math.sqrt(
+        reduce(operator.add, list(map(lambda a, b:
+                                      (a - b)**2, h1, h2))) / len(h1))
     # result完全相等是0.0，设置阈值为0.7
     print("图像对比结果是：{}".format(result))
     return result < threshold
 
 
 if __name__ == '__main__':
-    print(image_contrast_result('/Users/hoou/PycharmProjects/webtest-demo/airtest_img/CMS管理.png',
-                                '/Users/hoou/PycharmProjects/webtest-demo/airtest_img/头像.png', ))
+    print(
+        image_contrast_result(
+            '/Users/hoou/PycharmProjects/webtest-demo/airtest_img/CMS管理.png',
+            '/Users/hoou/PycharmProjects/webtest-demo/airtest_img/头像.png',
+        ))
