@@ -5,7 +5,7 @@ import sys
 sys.path.append('.')
 import os
 import logging
-from config.conf import LOG_PATH
+from config.conf import LOG_DIR
 from tools.times import datetime_strftime
 
 
@@ -37,7 +37,7 @@ class Logger:
 
     @property
     def log_path(self):
-        return os.path.join(LOG_PATH, '{}.log'.format(datetime_strftime()))
+        return os.path.join(LOG_DIR, '{}.log'.format(datetime_strftime()))
 
     @property
     def fmt(self):

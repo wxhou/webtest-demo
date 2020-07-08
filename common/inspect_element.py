@@ -6,14 +6,14 @@ sys.path.append('.')
 import os
 import yaml
 import time
-from config.conf import LOCATE_MODE, ELEMENT_PATH
+from config.conf import LOCATE_MODE, ELEMENT_DIR
 
 
 def inspect_element():
     """审查所有的元素是否正确"""
     start_time = time.time()
-    for i in os.listdir(ELEMENT_PATH):
-        _dir = os.path.join(ELEMENT_PATH, i)
+    for i in os.listdir(ELEMENT_DIR):
+        _dir = os.path.join(ELEMENT_DIR, i)
         if os.path.isfile(_dir):
             with open(_dir, encoding='utf-8') as f:
                 data = yaml.safe_load(f)

@@ -5,7 +5,7 @@ import sys
 sys.path.append('.')
 import os
 import smtplib
-from config.conf import REPORT_PATH
+from config.conf import REPORT_DIR
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
@@ -14,9 +14,9 @@ from email.mime.multipart import MIMEMultipart
 
 def get_new_report():
     """获取最新的报告"""
-    report_path = os.listdir(REPORT_PATH)
-    report_new_path = sorted(report_path, key=lambda x: os.path.getmtime(os.path.join(REPORT_PATH, x)))
-    report_new_file = os.path.join(REPORT_PATH, report_new_path[-1])
+    report_path = os.listdir(REPORT_DIR)
+    report_new_path = sorted(report_path, key=lambda x: os.path.getmtime(os.path.join(REPORT_DIR, x)))
+    report_new_file = os.path.join(REPORT_DIR, report_new_path[-1])
     with open(report_new_file, encoding='utf-8') as f:
         return f.read()
 

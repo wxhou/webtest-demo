@@ -11,22 +11,25 @@ from selenium.webdriver.common.by import By
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # 配置文件目录
-INI_PATH = os.path.join(BASE_DIR, 'config', 'config.ini')
+INI_DIR = os.path.join(BASE_DIR, 'config', 'config.ini')
 
 # 页面元素的目录
-ELEMENT_PATH = os.path.join(BASE_DIR, 'page_element')
+ELEMENT_DIR = os.path.join(BASE_DIR, 'page_element')
 
 # airtest目录
-AIRTEST_PATH = os.path.join(BASE_DIR, 'airtest_img')
+PAGE_IMAGES = os.path.join(BASE_DIR, 'page_images')
 
 # 日志目录
-LOG_PATH = os.path.join(BASE_DIR, 'logs')
+LOG_DIR = os.path.join(BASE_DIR, 'logs')
 
 # 报告目录
-REPORT_PATH = os.path.join(BASE_DIR, 'report')
+REPORT_DIR = os.path.join(BASE_DIR, 'report')
+
+# 截图目录
+SCREEN_DIR = os.path.join(BASE_DIR, 'screen_capture')
 
 # 测试集
-TEST_SUITES = os.path.join(BASE_DIR, 'TestCase')
+TEST_DIR = os.path.join(BASE_DIR, 'TestCase')
 
 # 系统信息
 SYS_INFO = platform.platform()

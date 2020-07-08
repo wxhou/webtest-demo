@@ -129,3 +129,4 @@ report/
 .pyre/
 demo.py
 *.jpg
+.idea/

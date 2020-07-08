@@ -1,16 +1,22 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 from tools.images import get_airtest_image
+from config.conf import SCREEN_DIR
+from airtest.core.settings import Settings as ST
 from airtest.core.cv import Template
+from basic.webpage import WebPage
 from tools.times import sleep
 
+# 设置airtest产生的截图目录
+ST.LOG_DIR = SCREEN_DIR
 
-class AirTestMethod:
+
+class AirTestMethod(WebPage):
     """airtest-selenium方法"""
 
     # 此类在Windows平台下无法使用，只能在MacOS平台下使用
     def __init__(self, driver):
-        self.driver = driver
+        super().__init__(driver)
         self._size = self.driver.get_window_size()
 
     @property

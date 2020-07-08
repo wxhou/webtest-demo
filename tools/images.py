@@ -5,10 +5,10 @@ import re
 import os
 import operator
 from PIL import Image
-from tools.times import sleep
-from tools.logger import log
 from functools import reduce
-from config.conf import AIRTEST_PATH
+from tools.logger import log
+from tools.times import sleep
+from config.conf import PAGE_IMAGES
 from airtest_selenium.exceptions import IsNotTemplateError
 
 
@@ -33,7 +33,7 @@ def get_image_name(string):
 
 def get_airtest_image(name):
     """获取airtest图像"""
-    path = os.path.join(AIRTEST_PATH, "{}.png".format(name))
+    path = os.path.join(PAGE_IMAGES, "{}.png".format(name))
     if os.path.exists(path):
         return path
     raise IsNotTemplateError("验证图片不存在：{}".format(path))

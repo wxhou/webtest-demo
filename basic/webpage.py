@@ -238,20 +238,6 @@ class WebPage:
         # Element is not currently visible and may not be manipulated
         return Select(ele)
 
-    def switch_to_frame(self, locator, number=None):
-        """切换iframe"""
-        log.info("切换最新的iframe")
-        return self.selector(lambda *args: self.wait.until(
-            EC.frame_to_be_available_and_switch_to_it(args)), locator, number)
-
-    def switch_windows_handle(self):
-        """切换最新的标签"""
-        now_handle1 = self.driver.current_window_handle
-        all_handle = self.driver.window_handles
-        self.driver.switch_to.window(all_handle[-1])
-        now_handle2 = self.driver.current_window_handle
-        assert now_handle1 != now_handle2, "切换标签失败!"
-
     def refresh(self):
         """刷新页面F5"""
         self.driver.refresh()

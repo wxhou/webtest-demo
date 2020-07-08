@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-from tools.times import sleep
-from page.webpage import WebPage
+from page.basepage import BasePage, sleep
 from common.readelemnts import Element
 
 login = Element('login')
 home = Element('home')
 
 
-class LoginPage(WebPage):
+class LoginPage(BasePage):
     def login(self, user, pwd):
         self.input_text(login['账号'], text=user)
         self.input_text(login['密码'], text=pwd)

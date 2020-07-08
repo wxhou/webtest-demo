@@ -4,7 +4,7 @@ import sys
 
 sys.path.append('.')
 import configparser
-from config.conf import INI_PATH
+from config.conf import INI_DIR
 
 HOST = 'HOST'
 
@@ -12,7 +12,7 @@ HOST = 'HOST'
 class ReadConfig:
     def __init__(self):
         self.config = configparser.RawConfigParser()
-        self.config.read(INI_PATH)
+        self.config.read(INI_DIR)
 
     def _get(self, section, option):
         """得到"""
@@ -21,7 +21,7 @@ class ReadConfig:
     def _set(self, section, option, value):
         """获取"""
         self.config.set(section, option, value)
-        with open(INI_PATH, 'w') as f:
+        with open(INI_DIR, 'w') as f:
             self.config.write(f)
 
     @property

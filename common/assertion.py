@@ -3,7 +3,7 @@
 import sys
 
 sys.path.append('.')
-from page.webpage import WebPage, base
+from basic.webpage import WebPage, base
 
 """
 断言文件
@@ -17,7 +17,7 @@ def assert_text_isDOM(driver, text):
 
 def assert_text_visible(driver, text):
     """验证文字是否可见"""
-    assert WebPage(driver).is_exists(base['模糊匹配文字'] % text), f"文字{text}不可见"
+    assert WebPage(driver).is_visible(base['模糊匹配文字'] % text), f"文字{text}不可见"
 
 
 if __name__ == '__main__':
