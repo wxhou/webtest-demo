@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-import sys
-
-sys.path.append('.')
+import os
 import configparser
-from config.conf import INI_DIR
 
 HOST = 'HOST'
 
 
 class ReadConfig:
-    def __init__(self):
+    def __init__(self, route):
+        self.path = os.path.join(route, 'config.ini')
         self.config = configparser.RawConfigParser()
-        self.config.read(INI_DIR)
+        self.config.read(self.path)
 
     def _get(self, section, option):
         """得到"""
@@ -21,7 +19,7 @@ class ReadConfig:
     def _set(self, section, option, value):
         """获取"""
         self.config.set(section, option, value)
-        with open(INI_DIR, 'w') as f:
+        with open(self.path, 'w') as f:
             self.config.write(f)
 
     @property
@@ -29,7 +27,5 @@ class ReadConfig:
         return self._get(HOST, HOST)
 
 
-ini = ReadConfig()
-
 if __name__ == '__main__':
-    print(ini.url)
+    pass

@@ -809,7 +809,7 @@ class _TestResult(TestResult):
         # result is a list of result in 4 tuple
         # (
         #   result code (0: success; 1: fail; 2: error;3:skip),
-        #   TestCase object,
+        #   tests object,
         #   Test output (byte string),
         #   stack trace,
         # )

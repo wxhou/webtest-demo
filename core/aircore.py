@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-from tools.images import get_airtest_image
-from config.conf import SCREEN_DIR
-from airtest.core.settings import Settings as ST
+from config import SCREEN_DIR
+from utils.times import sleep
+from core.webpage import WebPage
 from airtest.core.cv import Template
-from basic.webpage import WebPage
-from tools.times import sleep
+from airtest.core.settings import Settings as ST
 
 # 设置airtest产生的截图目录
 ST.LOG_DIR = SCREEN_DIR
@@ -35,7 +34,7 @@ class AirTestMethod(WebPage):
         """点击网页中的图片
         @param name: 图片名称
         """
-        v = self.template(get_airtest_image(name))
+        v = self.template(name)
         self.driver.airtest_touch(v)
         sleep(3)
 
@@ -44,7 +43,7 @@ class AirTestMethod(WebPage):
         @param name: 图片的名称
         @param msg:
         """
-        v = self.template(get_airtest_image(name))
+        v = self.template(name)
         self.driver.assert_template(v, msg)
 
 

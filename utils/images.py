@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-import math
 import re
-import os
+import math
 import operator
 from PIL import Image
 from functools import reduce
-from tools.logger import log
-from tools.times import sleep
-from config.conf import PAGE_IMAGES
-from airtest_selenium.exceptions import IsNotTemplateError
+from utils.logger import log
+from utils.times import sleep
 
 
 def area_screenshot(locator, path):
@@ -31,14 +28,6 @@ def get_image_name(string):
     return pattern.findall(string)
 
 
-def get_airtest_image(name):
-    """获取airtest图像"""
-    path = os.path.join(PAGE_IMAGES, "{}.png".format(name))
-    if os.path.exists(path):
-        return path
-    raise IsNotTemplateError("验证图片不存在：{}".format(path))
-
-
 def image_contrast_result(img1path, img2path, threshold=0.7):
     """图像对比结果"""
     image1 = Image.open(img1path)
@@ -49,7 +38,7 @@ def image_contrast_result(img1path, img2path, threshold=0.7):
 
     result = math.sqrt(
         reduce(operator.add, list(map(lambda a, b:
-                                      (a - b)**2, h1, h2))) / len(h1))
+                                      (a - b) ** 2, h1, h2))) / len(h1))
     # result完全相等是0.0，设置阈值为0.7
     print("图像对比结果是：{}".format(result))
     return result < threshold

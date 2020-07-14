@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-import sys
-
-sys.path.append('.')
+import urllib3
 import requests
 
-requests.urllib3.disable_warnings()
+urllib3.disable_warnings()
 
 
 class Download:

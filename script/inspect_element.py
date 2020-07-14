@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-import sys
-
-sys.path.append('.')
 import os
 import yaml
 import time
-from config.conf import LOCATE_MODE, ELEMENT_DIR
+from config import LOCATE_MODE, ELEMENT_DIR
 
 
 def inspect_element():

@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-import sys
-
-sys.path.append('.')
 import os
 import smtplib
-from config.conf import REPORT_DIR
+from config import REPORT_DIR
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr

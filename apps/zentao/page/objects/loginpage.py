@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-from page.basepage import BasePage, sleep
+from config import element
+from utils.times import sleep
 from common.readelemnts import Element
+from apps.zentao.page.basepage import BasePage
 
-login = Element('login')
-home = Element('home')
+login = Element(element['zentao'], 'login')
+home = Element(element['zentao'], 'home')
 
 
 class LoginPage(BasePage):
@@ -20,4 +22,4 @@ class LoginPage(BasePage):
 
 
 if __name__ == "__main__":
-    pass
+    print(login['密码'])

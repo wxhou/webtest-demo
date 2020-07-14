@@ -1,22 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
+"""
+selenium基类
+本文件存放了selenium基类的深度封装方法
+"""
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.touch_actions import TouchActions
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.common.exceptions import *
-from tools.images import area_screenshot, get_image_name
-from common.readelemnts import Element
-from config.conf import LOCATE_MODE
-from tools.logger import log
-from tools.times import *
-
-"""
-selenium基类
-本文件存放了selenium基类的深度封装方法
-"""
-base = Element('base')
+from config import LOCATE_MODE
+from utils.logger import log
+from utils.times import *
 
 
 class WebPage:
@@ -205,29 +201,6 @@ class WebPage:
         """
         js1 = 'document.getElementsByClassName("%s")[0].scroll%s=%s' % (element, func, number)
         self.driver.execute_script(js1)
-
-    def upload_file(self, locator, path, number=None):
-        """上传文件"""
-        name = get_image_name(path)[0]
-        ele = self.find_element(locator, number)
-        self.focus(ele)
-        ele.send_keys(path)
-        log.info("正在上传文件：%s" % path)
-        start_time = timestamp()
-        while not self.is_exists(base['模糊匹配文字'] % name):
-            sleep(0.5)
-            if (timestamp() - start_time) > self.timeout:
-                raise TimeoutException("在元素【】上传文件【】失败" % ())
-        log.info("上传文件【%s】成功！" % path)
-
-    def element_screenshot(self, locator, path, number=None):
-        """对某个元素进行截图,并返回截图路径"""
-        ele = self.find_element(locator, number)
-        self.focus(ele)  # 元素不可见则聚焦
-        self.driver.save_screenshot(path)
-        area_screenshot(ele, path)
-        self.driver.implicitly_wait(1)
-        log.info("截图的路径是：%s" % path)
 
     def select_drop_down(self, locator, number=None):
         """选择下拉框"""
