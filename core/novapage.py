@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-from config import element
+from selenium.common.exceptions import TimeoutException
+
+from config.conf import element
 from core.webpage import WebPage
 from common.readelemnts import Element
 from utils.logger import log
 from utils.times import *
 from utils.images import area_screenshot, get_image_name
-from selenium.common.exceptions import TimeoutException
 
 base = Element(element['base'], 'base')
 

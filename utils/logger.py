@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 import os
 import logging
-from config import LOG_DIR
+from config.conf import LOG_DIR
 from utils.times import datetime_strftime
 
 

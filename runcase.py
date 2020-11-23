@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 import os
 import unittest
-from config import tests, REPORT_DIR
+from config.conf import tests, REPORT_DIR
 from utils.sendmail import send_report_mail
 from utils.times import datetime_strftime
 from script.HTMLTestRunner_cn import HTMLTestRunner

@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
+from airtest.core.cv import Template
+from airtest.core.settings import Settings as ST
+
 from config import SCREEN_DIR
 from utils.times import sleep
 from core.webpage import WebPage
-from airtest.core.cv import Template
-from airtest.core.settings import Settings as ST
 
 # 设置airtest产生的截图目录
 ST.LOG_DIR = SCREEN_DIR

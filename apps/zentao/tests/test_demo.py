@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
 import unittest
-from config import ini, airimages
+from config.conf import ini, airimages
 from airtest_selenium import WebChrome
 from core.aircore import AirTestMethod
 from common.readimage import get_image

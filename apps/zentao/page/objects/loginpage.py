@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding:utf-8 -*-
-from config import element
+from config.conf import element
 from utils.times import sleep
 from common.readelemnts import Element
-from apps.zentao.page.basepage import BasePage
+from apps.zentao.page import BasePage
 
 login = Element(element['zentao'], 'login')
 home = Element(element['zentao'], 'home')

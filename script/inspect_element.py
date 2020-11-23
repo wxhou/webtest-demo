@@ -2,17 +2,18 @@
 # -*- coding:utf-8 -*-
 import os
 import yaml
-import time
-from config import LOCATE_MODE, ELEMENT_DIR
+from config import LOCATE_MODE
+from config.conf import element
+from utils.times import run_time
 
 
+@run_time
 def inspect_element():
     """审查所有的元素是否正确"""
-    start_time = time.time()
-    for i in os.listdir(ELEMENT_DIR):
-        _dir = os.path.join(ELEMENT_DIR, i)
-        if os.path.isfile(_dir):
-            with open(_dir, encoding='utf-8') as f:
+    for v in element.values():
+        for i in os.listdir(v):
+            ele_file = os.path.join(v, i)
+            with open(ele_file, encoding='utf-8') as f:
                 data = yaml.safe_load(f)
             for k in data:
                 ele = data[k]
@@ -22,15 +23,13 @@ def inspect_element():
                         raise AttributeError('【%s】路径中【%s]元素没有指定类型' %
                                              (i, k))
                     if pattern == 'xpath':
-                        assert '//' in ele, '【%s】路径中【%s]元素xpath类型与值不配' % (
-                            i, k)
+                        assert '//' in ele, \
+                            '【%s】路径中【%s]元素xpath类型与值不配' % (i, k)
                     if pattern == 'css':
-                        assert '//' not in ele, '【%s】路径中【%s]元素css类型与值不配' % (
-                            i, k)
+                        assert '//' not in ele, \
+                            '【%s】路径中【%s]元素css类型与值不配' % (i, k)
                 else:
                     raise AttributeError('【%s】路径中【%s]元素没有指定元素分隔符' % (i, k))
-    end_time = time.time()
-    print("校验元素done！用时%.3f秒！" % (end_time - start_time))
 
 
 if __name__ == '__main__':

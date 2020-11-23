@@ -2,6 +2,21 @@
 # -*- coding:utf-8 -*-
 import time
 import datetime
+from functools import wraps
+
+
+def run_time(func):
+    """运行时间"""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = timestamp()
+        res = func(*args, **kwargs)
+        end = timestamp() - start
+        print("Done! 共耗时{:.3f}秒！".format(end))
+        return res
+
+    return wrapper
 
 
 def timestamp():

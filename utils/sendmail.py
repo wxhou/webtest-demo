@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 import os
 import smtplib
-from config import REPORT_DIR
 from email.header import Header
 from email.mime.text import MIMEText
 from email.utils import parseaddr, formataddr
 from email.mime.multipart import MIMEMultipart
+from config.conf import REPORT_DIR
 
 
 def get_new_report():
